@@ -5,7 +5,7 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { AnimatedText } from "@/components/ui/AnimatedText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { socialLinks } from "@/lib/data";
-import { Mail, Github, MessageCircle, Send, MapPin } from "lucide-react";
+import { Mail, Github, Linkedin, Send, MapPin } from "lucide-react";
 
 /**
  * Contact Page
@@ -18,8 +18,8 @@ export default function ContactPage() {
     {
       icon: Mail,
       label: "Email",
-      value: "hello@syncratic.app",
-      href: "mailto:hello@syncratic.app",
+      value: "raahat.shah@gmail.com",
+      href: "mailto:raahat.shah@gmail.com",
       description: "For general inquiries and collaborations",
     },
     {
@@ -30,11 +30,11 @@ export default function ContactPage() {
       description: "Explore my code and projects",
     },
     {
-      icon: MessageCircle,
-      label: "Twitter/X",
-      value: "@syncratic",
-      href: "#",
-      description: "Thoughts and updates",
+      icon: Linkedin,
+      label: "LinkedIn",
+      value: "Raahat Shah",
+      href: "https://www.linkedin.com/in/raahat-shah",
+      description: "Professional profile and updates",
     },
   ];
 
@@ -79,9 +79,7 @@ export default function ContactPage() {
         </motion.div>
       </section>
 
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        {/* Contact Methods */}
-        <section>
+      <section className="max-w-2xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -157,116 +155,12 @@ export default function ContactPage() {
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-[var(--accent-contact)]" />
                 <span className="text-[var(--text-secondary)]">
-                  Based in the Digital Space
+                  Based in United Kingdom
                 </span>
               </div>
             </GlassCard>
           </motion.div>
-        </section>
-
-        {/* Contact Form */}
-        <section>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-8"
-          >
-            <h2 className="mb-4 text-2xl font-light text-white">Send a Message</h2>
-            <div
-              className="h-1 w-16 rounded-full"
-              style={{ backgroundColor: "var(--accent-contact)" }}
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <GlassCard className="p-8">
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="mb-2 block text-sm font-medium text-[var(--text-secondary)]"
-                    >
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      className="w-full rounded-lg border border-[var(--glass-border)] bg-white/5 px-4 py-3 text-white placeholder-[var(--text-muted)] transition-all focus:border-[var(--accent-contact)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-contact)]"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="mb-2 block text-sm font-medium text-[var(--text-secondary)]"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="w-full rounded-lg border border-[var(--glass-border)] bg-white/5 px-4 py-3 text-white placeholder-[var(--text-muted)] transition-all focus:border-[var(--accent-contact)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-contact)]"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="subject"
-                    className="mb-2 block text-sm font-medium text-[var(--text-secondary)]"
-                  >
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    className="w-full rounded-lg border border-[var(--glass-border)] bg-white/5 px-4 py-3 text-white placeholder-[var(--text-muted)] transition-all focus:border-[var(--accent-contact)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-contact)]"
-                    placeholder="What's this about?"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="mb-2 block text-sm font-medium text-[var(--text-secondary)]"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    className="w-full resize-none rounded-lg border border-[var(--glass-border)] bg-white/5 px-4 py-3 text-white placeholder-[var(--text-muted)] transition-all focus:border-[var(--accent-contact)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-contact)]"
-                    placeholder="Your message..."
-                  ></textarea>
-                </div>
-
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium text-[var(--void)] transition-all hover:opacity-90"
-                  style={{ backgroundColor: "var(--accent-contact)" }}
-                >
-                  Send Message
-                  <Send className="h-4 w-4" />
-                </button>
-              </form>
-            </GlassCard>
-          </motion.div>
-        </section>
-      </div>
+      </section>
 
       {/* Closing Section */}
       <section className="py-24 text-center">

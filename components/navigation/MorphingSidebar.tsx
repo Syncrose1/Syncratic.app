@@ -120,7 +120,7 @@ export function MorphingSidebar() {
         <div className="mb-12 px-6">
           <Link href="/" className="flex items-center gap-3">
             <motion.div
-              className="flex h-10 w-10 items-center justify-center rounded-xl"
+              className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"
               style={{
                 background: `linear-gradient(135deg, ${getAccentColor()}, transparent)`,
                 border: `1px solid ${getAccentColor()}`,
@@ -128,7 +128,11 @@ export function MorphingSidebar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="text-lg font-semibold text-white">S</span>
+              <img 
+                src="/Syncratic-Logo.svg" 
+                alt="Syncratic Logo"
+                className="w-8 h-8 object-contain brightness-0 invert"
+              />
             </motion.div>
             
             <AnimatePresence>

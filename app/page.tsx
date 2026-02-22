@@ -32,6 +32,20 @@ export default function HomePage() {
           </span>
         </motion.div>
 
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="mb-6"
+        >
+          <img 
+            src="/Syncratic-Logo.svg" 
+            alt="Syncratic Logo"
+            className="w-24 h-16 object-contain brightness-0 invert opacity-90"
+          />
+        </motion.div>
+
         {/* Main Title */}
         <div className="mb-8">
           <AnimatedText

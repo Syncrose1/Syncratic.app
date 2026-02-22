@@ -37,8 +37,8 @@ export function MorphingSidebar() {
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
       initial={false}
-      animate={{ width: isExpanded ? 180 : 64 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      animate={{ width: isExpanded ? 234 : 83 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <nav className="flex h-full w-full flex-col">
         {mainNavigation.map((item) => {
@@ -51,7 +51,7 @@ export function MorphingSidebar() {
               href={item.href}
               className="group relative flex h-[20%] w-full items-center border-l border-white/5 transition-colors duration-300 hover:bg-white/[0.04]"
               style={{
-                backgroundColor: isActive ? "rgba(255, 255, 255, 0.06)" : "rgba(255, 255, 255, 0.02)",
+                backgroundColor: isActive ? "rgba(255, 255, 255, 0.04)" : "rgba(255, 255, 255, 0.01)",
               }}
             >
               {/* Glass effect */}
@@ -75,19 +75,19 @@ export function MorphingSidebar() {
               />
 
               {/* Content - changes based on expanded state */}
-              <div className="relative z-10 flex w-full items-center px-5">
+              <div className="relative z-10 flex w-full items-center px-6">
                 {/* Icon */}
                 <motion.div
                   animate={{
                     color: isActive ? getAccentColor() : "rgba(255, 255, 255, 0.6)",
                   }}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-[26px] w-[26px]" />
                 </motion.div>
 
                 {/* Label - horizontal when expanded */}
                 <motion.span 
-                  className="ml-3 whitespace-nowrap text-sm font-medium"
+                  className="ml-4 whitespace-nowrap text-lg font-medium"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ 
                     opacity: isExpanded ? 1 : 0,

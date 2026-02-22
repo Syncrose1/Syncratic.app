@@ -5,7 +5,7 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { AnimatedText } from "@/components/ui/AnimatedText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { socialLinks } from "@/lib/data";
-import { Mail, Github, Linkedin, Send, MapPin } from "lucide-react";
+import { Mail, Github, Linkedin, MapPin } from "lucide-react";
 
 /**
  * Contact Page
@@ -41,7 +41,7 @@ export default function ContactPage() {
   return (
     <PageContainer>
       {/* Hero Section */}
-      <section className="pt-16 pb-24">
+      <section className="pt-8 md:pt-16 pb-12 md:pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -62,14 +62,14 @@ export default function ContactPage() {
           animation="fadeUp"
           delay={0.2}
           staggerDelay={0.04}
-          className="mb-8 text-5xl font-light text-white sm:text-6xl lg:text-7xl"
+          className="mb-4 md:mb-6 text-5xl font-light text-white sm:text-6xl lg:text-7xl"
         />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mb-12 max-w-3xl"
+          className="mb-8 max-w-3xl"
         >
           <p className="text-lg leading-relaxed text-[var(--text-secondary)]">
             Have a question, idea, or just want to say hello? I&apos;d love to hear from you. 
@@ -79,98 +79,92 @@ export default function ContactPage() {
         </motion.div>
       </section>
 
-      <section className="max-w-2xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-8"
-          >
-            <h2 className="mb-4 text-2xl font-light text-white">Connect</h2>
-            <div
-              className="h-1 w-16 rounded-full"
-              style={{ backgroundColor: "var(--accent-contact)" }}
-            />
-          </motion.div>
+      {/* Contact Methods - Responsive Grid */}
+      <section className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <h2 className="mb-4 text-2xl font-light text-white">Connect</h2>
+          <div
+            className="h-1 w-16 rounded-full"
+            style={{ backgroundColor: "var(--accent-contact)" }}
+          />
+        </motion.div>
 
-          <div className="space-y-4">
-            {contactMethods.map((method, index) => {
-              const Icon = method.icon;
-              return (
-                <motion.a
-                  key={method.label}
-                  href={method.href}
-                  target={method.href.startsWith("http") ? "_blank" : undefined}
-                  rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="block"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {contactMethods.map((method, index) => {
+            const Icon = method.icon;
+            return (
+              <motion.a
+                key={method.label}
+                href={method.href}
+                target={method.href.startsWith("http") ? "_blank" : undefined}
+                rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="block"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <GlassCard
+                  className="group h-full flex flex-col items-center text-center p-6 transition-all"
+                  hover
                 >
-                  <GlassCard
-                    className="group flex items-center gap-4 p-6 transition-all"
-                    hover
+                  <div
+                    className="flex h-14 w-14 items-center justify-center rounded-xl mb-4 transition-colors"
+                    style={{
+                      backgroundColor: "rgba(226, 232, 240, 0.1)",
+                    }}
                   >
-                    <div
-                      className="flex h-12 w-12 items-center justify-center rounded-xl transition-colors"
-                      style={{
-                        backgroundColor: "rgba(226, 232, 240, 0.1)",
-                      }}
-                    >
-                      <Icon className="h-5 w-5 text-[var(--accent-contact)]" />
-                    </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium text-white">{method.label}</div>
-                          <div className="text-sm text-[var(--text-secondary)]">
-                            {method.value}
-                          </div>
-                        </div>
-                        <Send className="h-4 w-4 text-[var(--text-muted)] opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100" />
-                      </div>
-                      
-                      <p className="mt-1 text-xs text-[var(--text-muted)]">
-                        {method.description}
-                      </p>
-                    </div>
-                  </GlassCard>
-                </motion.a>
-              );
-            })}
-          </div>
+                    <Icon className="h-6 w-6 text-[var(--accent-contact)]" />
+                  </div>
+                  
+                  <div className="font-medium text-white mb-1">{method.label}</div>
+                  <div className="text-sm text-[var(--text-secondary)] mb-2">
+                    {method.value}
+                  </div>
+                  
+                  <p className="text-xs text-[var(--text-muted)]">
+                    {method.description}
+                  </p>
+                </GlassCard>
+              </motion.a>
+            );
+          })}
+        </div>
 
-          {/* Location */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-8"
-          >
-            <GlassCard className="p-6">
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-[var(--accent-contact)]" />
-                <span className="text-[var(--text-secondary)]">
-                  Based in United Kingdom
-                </span>
-              </div>
-            </GlassCard>
-          </motion.div>
+        {/* Location */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-8 max-w-md mx-auto md:max-w-none"
+        >
+          <GlassCard className="p-4 md:w-fit md:mx-auto">
+            <div className="flex items-center justify-center gap-3">
+              <MapPin className="h-5 w-5 text-[var(--accent-contact)]" />
+              <span className="text-[var(--text-secondary)]">
+                Based in United Kingdom
+              </span>
+            </div>
+          </GlassCard>
+        </motion.div>
       </section>
 
       {/* Closing Section */}
-      <section className="py-24 text-center">
+      <section className="py-16 md:py-24 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <GlassCard className="mx-auto max-w-2xl p-12" glow="subtle">
+          <GlassCard className="mx-auto max-w-2xl p-8 md:p-12" glow="subtle">
             <motion.div
               animate={{
                 scale: [1, 1.1, 1],

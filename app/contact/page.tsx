@@ -8,10 +8,9 @@ import { socialLinks } from "@/lib/data";
 import { Mail, Github, MessageCircle, Send, MapPin } from "lucide-react";
 
 /**
- * Contact Page - The Transmission
+ * Contact Page
  * 
  * A clean, elegant contact page with social links and a contact form.
- * Designed to feel like sending a message across space.
  */
 
 export default function ContactPage() {
@@ -53,7 +52,7 @@ export default function ContactPage() {
             className="text-sm font-medium tracking-widest uppercase"
             style={{ color: "var(--accent-contact)" }}
           >
-            The Transmission
+            Get in Touch
           </span>
         </motion.div>
 

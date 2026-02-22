@@ -8,7 +8,7 @@ import { researchItems } from "@/lib/data";
 import { FlaskConical, FileText, Clock, CheckCircle2 } from "lucide-react";
 
 /**
- * Research Page - The Discovery
+ * Research Page
  * 
  * Showcases research involvement, publications, and academic work.
  */
@@ -54,7 +54,7 @@ export default function ResearchPage() {
             className="text-sm font-medium tracking-widest uppercase"
             style={{ color: "var(--accent-discovery)" }}
           >
-            The Discovery
+            Research
           </span>
         </motion.div>
 

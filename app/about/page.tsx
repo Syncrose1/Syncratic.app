@@ -1,19 +1,134 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AnimatedText } from "@/components/ui/AnimatedText";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Code2, Heart, Microscope, Lightbulb } from "lucide-react";
+import { Code2, Heart, Microscope, Lightbulb, GraduationCap } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
 
 /**
- * About Page - The Observer
+ * FloatingIcon Component
+ * 
+ * An icon that moves away from the mouse cursor and springs back to origin.
+ */
+function FloatingIcon({ 
+  src, 
+  alt, 
+  className, 
+  style, 
+  initialRotate,
+  containerRef 
+}: { 
+  src: string; 
+  alt: string; 
+  className: string; 
+  style: React.CSSProperties;
+  initialRotate: number;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const iconRef = useRef<HTMLDivElement>(null);
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
+  
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotate = useMotionValue(initialRotate);
+  
+  const springConfig = { damping: 20, stiffness: 300 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+  const springRotate = useSpring(rotate, springConfig);
+
+  useEffect(() => {
+    if (iconRef.current && containerRef.current) {
+      const rect = iconRef.current.getBoundingClientRect();
+      const containerRect = containerRef.current.getBoundingClientRect();
+      setOrigin({
+        x: rect.left - containerRect.left + rect.width / 2,
+        y: rect.top - containerRect.top + rect.height / 2
+      });
+    }
+  }, [containerRef]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const mouseX = e.clientX - containerRect.left;
+      const mouseY = e.clientY - containerRect.top;
+      
+      const dx = mouseX - origin.x;
+      const dy = mouseY - origin.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      const repelRadius = 150;
+      const repelStrength = 80;
+      
+      if (distance < repelRadius && distance > 0) {
+        const force = (1 - distance / repelRadius) * repelStrength;
+        const angle = Math.atan2(dy, dx);
+        
+        x.set(-Math.cos(angle) * force);
+        y.set(-Math.sin(angle) * force);
+        rotate.set(initialRotate + (Math.random() - 0.5) * 10);
+      } else {
+        x.set(0);
+        y.set(0);
+        rotate.set(initialRotate);
+      }
+    };
+
+    const handleMouseLeave = () => {
+      x.set(0);
+      y.set(0);
+      rotate.set(initialRotate);
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, [origin, x, y, rotate, initialRotate, containerRef]);
+
+  return (
+    <motion.div
+      ref={iconRef}
+      className={className}
+      style={{
+        ...style,
+        x: springX,
+        y: springY,
+        rotate: springRotate,
+      }}
+      whileHover={{ scale: 1.1 }}
+    >
+      <img 
+        src={src} 
+        alt={alt}
+        className="w-full h-full drop-shadow-2xl"
+      />
+    </motion.div>
+  );
+}
+
+/**
+ * About Page
  * 
  * A personal introduction page that tells the story of who I am,
  * combining my medical background with my passion for development.
  */
 
 export default function AboutPage() {
+  const visualsRef = useRef<HTMLDivElement>(null);
   const skills = [
     {
       category: "Medical",
@@ -29,15 +144,21 @@ export default function AboutPage() {
     },
     {
       category: "Research",
-      items: ["Medical AI", "EdTech", "Data Analysis", "Clinical Studies"],
+      items: ["Medical AI", "EdTech", "Ophthalmology", "Clinical Studies"],
       icon: Microscope,
       color: "var(--accent-discovery)",
     },
     {
-      category: "Interests",
-      items: ["UI/UX Design", "Productivity", "Open Source", "Teaching"],
-      icon: Lightbulb,
+      category: "Background",
+      items: ["Pharmaceutical Chemistry", "First Class Honours", "QMUL"],
+      icon: GraduationCap,
       color: "var(--accent-primary)",
+    },
+    {
+      category: "Interests",
+      items: ["Ophthalmology", "Productivity", "Open Source", "Teaching"],
+      icon: Lightbulb,
+      color: "var(--accent-discovery)",
     },
   ];
 
@@ -53,7 +174,7 @@ export default function AboutPage() {
         >
           <span className="text-sm font-medium tracking-widest uppercase"
           style={{ color: "var(--accent-human)" }}>
-            The Observer
+            About Me
           </span>
         </motion.div>
 
@@ -66,23 +187,75 @@ export default function AboutPage() {
           className="mb-8 text-5xl font-light text-white sm:text-6xl lg:text-7xl"
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mb-12 max-w-3xl"
-        >
-          <p className="mb-6 text-lg leading-relaxed text-[var(--text-secondary)]">
-            I'm a medical student with a passion for building digital tools that make a difference. 
-            My journey bridges two worlds: the precision and empathy required in medicine, and the 
-            creativity and problem-solving of software development.
-          </p>
-          <p className="text-lg leading-relaxed text-[var(--text-secondary)]">
-            I believe that technology, when thoughtfully designed, can enhance human capabilities 
-            rather than replace them. My work focuses on creating tools that help medical students 
-            learn more effectively, clinicians work more efficiently, and patients receive better care.
-          </p>
-        </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+          {/* Text Content - Takes up 3 columns */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="lg:col-span-3 max-w-3xl"
+          >
+            <p className="mb-6 text-lg leading-relaxed text-[var(--text-secondary)]">
+              I'm a medical student with a passion for building digital tools that make a difference. 
+              My journey bridges three worlds: the analytical precision of pharmaceutical chemistry, 
+              the empathy and problem-solving required in medicine, and the creativity and utility of software development.
+            </p>
+            <p className="mb-6 text-lg leading-relaxed text-[var(--text-secondary)]">
+              I believe that technology, when thoughtfully designed, can enhance human capabilities 
+              rather than replace them. My work focuses on creating tools that help medical students 
+              learn more effectively, and for planners to organise more efficiently. I hope to engage 
+              more closely with the NHS to develop tools and conduct research that benefits patient care 
+              and empowers clinicians.
+            </p>
+            <p className="text-lg leading-relaxed text-[var(--text-secondary)]">
+              With deep proficiency in AI tools and a solid understanding of AI systems architecture, 
+              I bring a unique perspective to medical AI research. I actively work with large language 
+              models, machine learning frameworks, and AI-assisted development workflows—bridging the 
+              gap between cutting-edge AI capabilities and real-world clinical applications. I'm particularly 
+              interested in collaborating on research that explores how AI can augment clinical decision-making, 
+              streamline healthcare workflows, and ultimately improve patient outcomes.
+            </p>
+          </motion.div>
+
+          {/* Visual Elements - Takes up 2 columns */}
+          <motion.div
+            ref={visualsRef}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="lg:col-span-2 relative h-[400px] lg:h-[500px]"
+          >
+            {/* Flask - Chemistry */}
+            <FloatingIcon
+              src="/Flask.svg"
+              alt="Chemistry Flask"
+              className="absolute top-8 left-4 w-32 h-32 cursor-pointer"
+              style={{ filter: 'brightness(0) saturate(100%) invert(77%) sepia(28%) saturate(555%) hue-rotate(179deg) brightness(93%) contrast(92%)' }}
+              initialRotate={-12}
+              containerRef={visualsRef}
+            />
+
+            {/* Stethoscope - Medicine */}
+            <FloatingIcon
+              src="/Stethoscope.svg"
+              alt="Stethoscope"
+              className="absolute top-24 right-4 w-36 h-36 cursor-pointer"
+              style={{ filter: 'brightness(0) saturate(100%) invert(73%) sepia(37%) saturate(628%) hue-rotate(312deg) brightness(101%) contrast(96%)' }}
+              initialRotate={18}
+              containerRef={visualsRef}
+            />
+
+            {/* Programming - Code */}
+            <FloatingIcon
+              src="/Programming.svg"
+              alt="Programming"
+              className="absolute bottom-8 left-12 w-28 h-28 cursor-pointer"
+              style={{ filter: 'brightness(0) saturate(100%) invert(80%) sepia(19%) saturate(709%) hue-rotate(203deg) brightness(94%) contrast(88%)' }}
+              initialRotate={-22}
+              containerRef={visualsRef}
+            />
+          </motion.div>
+        </div>
       </section>
 
       {/* Philosophy Section */}
@@ -125,7 +298,7 @@ export default function AboutPage() {
             <GlassCard className="h-full p-8" hover>
               <h3 className="mb-4 text-xl font-medium text-white">Building for Impact</h3>
               <p className="leading-relaxed text-[var(--text-secondary)]">
-                Every project I undertake is driven by a simple question: <em>How can this help?</em> 
+                Every project I undertake is driven by a simple question: <em>How can this help?</em>{" "}
                 Whether it's helping medical students track their progress or creating tools that 
                 visualize complex data, I aim to build things that matter.
               </p>
@@ -148,7 +321,7 @@ export default function AboutPage() {
           style={{ backgroundColor: "var(--accent-human)" }} />
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {skills.map((skill, index) => {
             const Icon = skill.icon;
             return (
@@ -207,29 +380,29 @@ export default function AboutPage() {
         <div className="space-y-8">
           {[
             {
-              year: "2019",
-              title: "Started Medical School",
-              description: "Began the journey into medicine, discovering the intersection of science and human care.",
+              year: "2016",
+              title: "First Code",
+              description: "Started learning Python, GML (GameMaker Language), and C# for Unity—driven by a passion for game development and the desire to bring creative ideas to life through code.",
             },
             {
               year: "2020",
-              title: "First Code",
-              description: "Started learning to code as a way to solve problems I encountered in my studies.",
-            },
-            {
-              year: "2022",
-              title: "MedTracker Launch",
-              description: "Released the first version of MedTracker to help fellow students track their progress.",
+              title: "BSc Pharmaceutical Chemistry",
+              description: "Began studying Pharmaceutical Chemistry at Queen Mary's University of London. This chemistry-focused degree (with pharmaceutical specialisation in later years) provided a strong foundation in analytical thinking and molecular science—skills that translate remarkably well to both medicine and software architecture.",
             },
             {
               year: "2023",
-              title: "Expanding the Ecosystem",
-              description: "Built BlockOut and began work on Increment, exploring new ways to visualize and organize information.",
+              title: "Graduate Entry Medicine",
+              description: "Achieved First Class Honours in Pharmaceutical Chemistry and immediately transitioned to the 4-year Graduate Entry Medicine program at the University of Southampton. Projected graduation in 2027.",
             },
             {
-              year: "2024",
-              title: "The Future",
-              description: "Continuing to bridge medicine and technology, exploring AI integration in healthcare tools.",
+              year: "2025",
+              title: "MedTracker Launch",
+              description: "Released MedTracker in Q3 2025—a UKMLA-based medical education tracker that provides a ticklist version of the UKMLA content map, born from my own need to systematically track and organise my medical knowledge.",
+            },
+            {
+              year: "2026",
+              title: "BlockOut & Increment",
+              description: "Launched BlockOut in Q1 2026—a WinDirStat-inspired task visualiser. Increment is currently being rebuilt from the ground up as a web-first application with refined architecture and AI-powered features.",
             },
           ].map((milestone, index) => (
             <motion.div

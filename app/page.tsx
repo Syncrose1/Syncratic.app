@@ -7,7 +7,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { ArrowDown, Sparkles } from "lucide-react";
 
 /**
- * Home Page - The Nexus
+ * Home Page
  * 
  * The landing page that serves as the central hub.
  * Features a stunning hero section with animated text,
@@ -28,7 +28,7 @@ export default function HomePage() {
         >
           <Sparkles className="h-4 w-4 text-[var(--accent-primary)]" />
           <span className="text-sm font-medium tracking-widest text-[var(--accent-primary)] uppercase">
-            Welcome to the Nexus
+            Welcome to my portfolio
           </span>
         </motion.div>
 
@@ -49,69 +49,64 @@ export default function HomePage() {
         {/* Main Title */}
         <div className="mb-8">
           <AnimatedText
-            text="Syncratic"
+            text="My name is Raahat Shah"
             type="chars"
             animation="fadeUp"
             delay={0.3}
             staggerDelay={0.05}
             className="text-6xl font-light tracking-tight text-white sm:text-7xl lg:text-8xl"
           />
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <p className="mt-4 max-w-2xl text-xl text-[var(--text-secondary)] sm:text-2xl">
-              Medical Student & Developer
-            </p>
-          </motion.div>
         </div>
 
         {/* Tagline */}
         <motion.p
-          className="mb-12 max-w-xl text-lg leading-relaxed text-[var(--text-muted)]"
+          className="mb-12 max-w-2xl text-lg leading-relaxed text-[var(--text-muted)]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
         >
-          Exploring the intersection of medicine, technology, and human experience. 
-          Building tools that bridge the gap between clinical practice and digital innovation.
+          Exploring the intersection of medicine, technology, ophthalmology and the mechanisms of learning. Building productivity tools that bridge the gap between clinical practice and digital innovation.
         </motion.p>
 
         {/* Quick Stats/Highlights */}
         <motion.div
-          className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-3"
+          className="mb-16 flex flex-col gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.2 }}
         >
           {[
-            { label: "Projects", value: "3", color: "var(--accent-tech)" },
-            { label: "Years Coding", value: "5+", color: "var(--accent-human)" },
-            { label: "Passion", value: "∞", color: "var(--accent-discovery)" },
+            { label: "Public Projects", value: "3", color: "var(--accent-tech)", offset: "ml-0" },
+            { label: "Years Coding", value: "8+", color: "var(--accent-human)", offset: "ml-8" },
+            { label: "Driven by Curiosity", value: "∞", color: "var(--accent-discovery)", offset: "ml-16" },
           ].map((stat, index) => (
-            <GlassCard
+            <motion.div
               key={stat.label}
-              className="p-6 text-center"
-              hover
-              glow="subtle"
+              className={`flex items-center gap-4 ${stat.offset}`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                delay: 1.4 + index * 0.15,
+                duration: 0.5,
+              }}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{
-                  delay: 1.4 + index * 0.1,
+                  delay: 1.6 + index * 0.15,
                   type: "spring",
                   stiffness: 200,
                 }}
-                className="mb-2 text-3xl font-light"
+                className="text-4xl font-light"
                 style={{ color: stat.color }}
               >
                 {stat.value}
               </motion.div>
-              <div className="text-sm text-[var(--text-muted)]">{stat.label}</div>
-            </GlassCard>
+              <div className="text-sm font-medium tracking-wider text-[var(--text-muted)] uppercase">
+                {stat.label}
+              </div>
+            </motion.div>
           ))}
         </motion.div>
 
@@ -146,9 +141,9 @@ export default function HomePage() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="mb-4 text-3xl font-light text-white">Featured Systems</h2>
+          <h2 className="mb-4 text-3xl font-light text-white">Featured Projects</h2>
           <p className="mb-12 max-w-2xl text-[var(--text-muted)]">
-            Tools and applications built to solve real problems at the intersection of medicine and technology.
+            Tools and applications built to solve real problems at the intersection of medicine, productivity and technology.
           </p>
         </motion.div>
 
@@ -156,19 +151,19 @@ export default function HomePage() {
           {[
             {
               name: "MedTracker",
-              description: "Track clinical rotations and medical education progress",
+              description: "UKMLA-based medical education tracker providing a ticklist version of the UKMLA content map",
               color: "var(--accent-tech)",
               href: "/projects/medtracker",
             },
             {
               name: "BlockOut",
-              description: "Visual task planning with treemap visualization",
+              description: "WinDirStat-inspired task visualiser with daily planning capabilities",
               color: "var(--accent-human)",
               href: "/projects/blockout",
             },
             {
               name: "Increment",
-              description: "AI-powered list-based note taking",
+              description: "List-based note taking tool with integrated AI-based task decomposition",
               color: "var(--accent-discovery)",
               href: "/projects/increment",
             },

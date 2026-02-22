@@ -9,7 +9,7 @@ import { projects } from "@/lib/data";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 
 /**
- * Projects Hub Page - The Systems
+ * Projects Hub Page
  * 
  * A showcase of all projects with visual previews and detailed information.
  * Each project card links to its dedicated detail page.
@@ -30,7 +30,7 @@ export default function ProjectsPage() {
             className="text-sm font-medium tracking-widest uppercase"
             style={{ color: "var(--accent-tech)" }}
           >
-            The Systems
+            My Projects
           </span>
         </motion.div>
 

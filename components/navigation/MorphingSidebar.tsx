@@ -1,29 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNavigation } from "@/lib/data";
-import { cn, setPageTheme, type Theme } from "@/lib/utils";
+import { setPageTheme, type Theme } from "@/lib/utils";
 
 /**
- * MorphingSidebar Navigation Component
+ * RightSidebar Navigation Component
  * 
- * A unique sidebar that morphs between collapsed and expanded states.
- * When collapsed: Shows minimal icons with subtle indicators
- * When expanded: Reveals labels, descriptions, and enhanced visual effects
- * 
- * Features:
- * - Smooth morphing animations using Framer Motion
- * - Theme-aware accent colors that change per page
- * - Glassmorphism styling with backdrop blur
- * - Hover-triggered expansion
- * - Active state highlighting with glow effects
+ * A right-side navigation with translucent full-height bars.
+ * Each bar represents a navigation item, divided equally.
+ * On hover: bar expands slightly and changes color.
  */
 
 export function MorphingSidebar() {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTheme, setCurrentTheme] = useState<Theme>("home");
   const pathname = usePathname();
 
@@ -36,7 +29,6 @@ export function MorphingSidebar() {
     }
   }, [pathname]);
 
-  // Get accent color based on current theme
   const getAccentColor = () => {
     switch (currentTheme) {
       case "home":
@@ -54,232 +46,113 @@ export function MorphingSidebar() {
     }
   };
 
-  const getGlowColor = () => {
-    switch (currentTheme) {
-      case "home":
-        return "var(--accent-primary-glow)";
-      case "about":
-        return "var(--accent-human-glow)";
-      case "projects":
-        return "var(--accent-tech-glow)";
-      case "research":
-        return "var(--accent-discovery-glow)";
-      case "contact":
-        return "var(--accent-contact-glow)";
-      default:
-        return "var(--accent-primary-glow)";
-    }
-  };
+  // Calculate height percentage for each nav item
+  const itemHeight = 100 / mainNavigation.length;
 
   return (
     <motion.aside
-      className="fixed left-0 top-0 z-50 h-screen"
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
-      initial={false}
-      animate={{
-        width: isExpanded ? 280 : 80,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 400,
-        damping: 30,
-      }}
+      className="fixed right-0 top-0 z-50 h-screen w-16"
+      initial={{ x: 100 }}
+      animate={{ x: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {/* Glass Background */}
-      <motion.div
-        className="absolute inset-0 glass"
-        style={{
-          borderRight: `1px solid var(--glass-border)`,
-        }}
-        animate={{
-          backgroundColor: isExpanded
-            ? "rgba(255, 255, 255, 0.05)"
-            : "rgba(255, 255, 255, 0.02)",
-        }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Ambient Glow Effect */}
-      <motion.div
-        className="absolute -right-20 top-1/4 h-64 w-64 rounded-full"
-        style={{
-          background: `radial-gradient(circle, ${getGlowColor()} 0%, transparent 70%)`,
-          filter: "blur(40px)",
-        }}
-        animate={{
-          opacity: isExpanded ? 0.6 : 0.3,
-          scale: isExpanded ? 1.2 : 1,
-        }}
-        transition={{ duration: 0.5 }}
-      />
-
-      {/* Navigation Content */}
-      <div className="relative flex h-full flex-col py-8">
-        {/* Logo/Brand Area */}
-        <div className="mb-12 px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <motion.div
-              className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"
-              style={{
-                background: `linear-gradient(135deg, ${getAccentColor()}, transparent)`,
-                border: `1px solid ${getAccentColor()}`,
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <img 
-                src="/Syncratic-Logo.svg" 
-                alt="Syncratic Logo"
-                className="w-8 h-8 object-contain brightness-0 invert"
-              />
-            </motion.div>
-            
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span className="text-lg font-medium text-white">Syncratic</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Link>
-        </div>
-
-        {/* Navigation Items */}
-        <nav className="flex-1 px-4">
-          <ul className="space-y-2">
-            {mainNavigation.map((item, index) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-
-              return (
-                <motion.li
-                  key={item.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link href={item.href} className="block">
-                    <motion.div
-                      className={cn(
-                        "group relative flex items-center gap-4 rounded-xl px-4 py-3 transition-colors",
-                        isActive
-                          ? "bg-white/5"
-                          : "hover:bg-white/[0.03]"
-                      )}
-                      whileHover={{ x: 4 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {/* Active Indicator */}
-                      {isActive && (
-                        <motion.div
-                          className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-r-full"
-                          style={{ backgroundColor: getAccentColor() }}
-                          layoutId="activeIndicator"
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 30,
-                          }}
-                        />
-                      )}
-
-                      {/* Icon */}
-                      <motion.div
-                        className="flex h-10 w-10 items-center justify-center rounded-lg"
-                        style={{
-                          color: isActive ? getAccentColor() : "var(--text-secondary)",
-                        }}
-                        animate={{
-                          color: isActive ? getAccentColor() : "var(--text-secondary)",
-                        }}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </motion.div>
-
-                      {/* Expanded Content */}
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            className="flex flex-col overflow-hidden"
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: "auto" }}
-                            exit={{ opacity: 0, width: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <span
-                              className={cn(
-                                "whitespace-nowrap text-sm font-medium transition-colors",
-                                isActive
-                                  ? "text-white"
-                                  : "text-[var(--text-secondary)] group-hover:text-white"
-                              )}
-                            >
-                              {item.label}
-                            </span>
-                            <span className="whitespace-nowrap text-xs text-[var(--text-muted)]">
-                              {item.description}
-                            </span>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
-                      {/* Hover Glow Effect */}
-                      <motion.div
-                        className="absolute inset-0 rounded-xl opacity-0 transition-opacity group-hover:opacity-100"
-                        style={{
-                          background: `linear-gradient(90deg, ${getGlowColor()} 0%, transparent 100%)`,
-                        }}
-                      />
-                    </motion.div>
-                  </Link>
-                </motion.li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        {/* Footer Area */}
-        <div className="px-6 pt-8">
-          <AnimatePresence>
-            {isExpanded && (
+      <nav className="relative flex h-full flex-col">
+        {mainNavigation.map((item, index) => {
+          const isActive = pathname === item.href;
+          const isHovered = hoveredIndex === index;
+          const Icon = item.icon;
+          
+          return (
+            <Link key={item.id} href={item.href} className="flex-1">
               <motion.div
-                className="space-y-4"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
+                className="relative flex h-full cursor-pointer flex-col items-center justify-center overflow-hidden border-l border-white/[0.05]"
+                style={{
+                  backgroundColor: isActive 
+                    ? "rgba(255, 255, 255, 0.05)" 
+                    : "rgba(255, 255, 255, 0.02)",
+                }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                animate={{
+                  width: isHovered ? 180 : 64,
+                  backgroundColor: isActive
+                    ? "rgba(255, 255, 255, 0.08)"
+                    : isHovered
+                    ? "rgba(255, 255, 255, 0.06)"
+                    : "rgba(255, 255, 255, 0.02)",
+                }}
+                transition={{
+                  width: { type: "spring", stiffness: 300, damping: 30 },
+                  backgroundColor: { duration: 0.2 },
+                }}
               >
-                <div className="h-px bg-gradient-to-r from-transparent via-[var(--glass-border)] to-transparent" />
-                <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-                  <span>Medical Student</span>
-                  <span>&</span>
-                  <span>Developer</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+                {/* Active indicator line */}
+                {isActive && (
+                  <motion.div
+                    className="absolute left-0 top-0 h-full w-1"
+                    style={{ backgroundColor: getAccentColor() }}
+                    layoutId="activeIndicator"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
 
-      {/* Collapse/Expand Indicator */}
-      <motion.div
-        className="absolute -right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full glass"
-        style={{ borderColor: getAccentColor() }}
-        animate={{
-          rotate: isExpanded ? 180 : 0,
-        }}
-        transition={{ duration: 0.3 }}
-      >
-        <div
-          className="h-1.5 w-1.5 rounded-full"
-          style={{ backgroundColor: getAccentColor() }}
-        />
-      </motion.div>
+                {/* Glass overlay */}
+                <div 
+                  className="absolute inset-0 backdrop-blur-sm"
+                  style={{
+                    background: isHovered 
+                      ? `linear-gradient(90deg, ${getAccentColor()}10 0%, transparent 100%)`
+                      : "transparent"
+                  }}
+                />
+
+                {/* Content container */}
+                <div className="relative z-10 flex items-center gap-3 px-4">
+                  {/* Icon */}
+                  <motion.div
+                    animate={{
+                      color: isActive 
+                        ? getAccentColor() 
+                        : isHovered 
+                        ? "#ffffff" 
+                        : "var(--text-secondary)",
+                    }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Icon className="h-5 w-5 shrink-0" />
+                  </motion.div>
+
+                  {/* Label - appears on hover */}
+                  <motion.span
+                    className="whitespace-nowrap text-sm font-medium"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{
+                      opacity: isHovered ? 1 : 0,
+                      x: isHovered ? 0 : -10,
+                      color: isActive ? getAccentColor() : "#ffffff",
+                    }}
+                    transition={{ duration: 0.2, delay: isHovered ? 0.1 : 0 }}
+                  >
+                    {item.label}
+                  </motion.span>
+                </div>
+
+                {/* Hover glow effect */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  animate={{
+                    opacity: isHovered ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  style={{
+                    background: `linear-gradient(90deg, ${getAccentColor()}08 0%, transparent 100%)`,
+                  }}
+                />
+              </motion.div>
+            </Link>
+          );
+        })}
+      </nav>
     </motion.aside>
   );
 }

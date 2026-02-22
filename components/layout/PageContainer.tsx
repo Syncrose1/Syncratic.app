@@ -37,8 +37,8 @@ export function PageContainer({
       {/* Main Content */}
       <motion.main
         className={cn(
-          "min-h-screen pl-20 pt-8 pb-8 pr-8",
-          fullWidth && "pl-20",
+          "min-h-screen pl-8 pt-8 pb-8 pr-20",
+          fullWidth && "pr-20",
           className
         )}
         initial={{ opacity: 0, y: 20 }}

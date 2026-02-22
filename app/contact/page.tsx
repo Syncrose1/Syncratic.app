@@ -62,7 +62,7 @@ export default function ContactPage() {
           animation="fadeUp"
           delay={0.2}
           staggerDelay={0.04}
-          className="mb-4 md:mb-6 text-5xl font-light text-white sm:text-6xl lg:text-7xl"
+          className="mb-4 md:mb-6 text-4xl font-light text-white sm:text-5xl md:text-6xl lg:text-7xl"
         />
 
         <motion.div

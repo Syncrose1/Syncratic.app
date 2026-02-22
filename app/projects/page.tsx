@@ -40,7 +40,7 @@ export default function ProjectsPage() {
           animation="fadeUp"
           delay={0.2}
           staggerDelay={0.04}
-          className="mb-8 text-5xl font-light text-white sm:text-6xl lg:text-7xl"
+          className="mb-8 text-4xl font-light text-white sm:text-5xl md:text-6xl lg:text-7xl"
         />
 
         <motion.div
@@ -79,32 +79,32 @@ export default function ProjectsPage() {
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Content Side */}
-                    <div className="flex flex-col justify-between p-8 lg:p-12">
+                    <div className="flex flex-col justify-between p-5 sm:p-6 lg:p-8">
                       <div>
                         {/* Header */}
-                        <div className="mb-6 flex items-center justify-between">
-                          <div className="flex items-center gap-4">
+                        <div className="mb-4 sm:mb-6 flex items-center justify-between">
+                          <div className="flex items-center gap-3 sm:gap-4">
                             <div
-                              className="flex h-14 w-14 items-center justify-center rounded-xl"
+                              className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl flex-shrink-0"
                               style={{
                                 backgroundColor: `${project.accentColor}20`,
                                 color: project.accentColor,
                               }}
                             >
-                              <Icon className="h-7 w-7" />
+                              <Icon className="h-6 w-6 sm:h-7 sm:w-7" />
                             </div>
                             
-                            <div>
-                              <h2 className="text-2xl font-medium text-white"
+                            <div className="min-w-0">
+                              <h2 className="text-xl sm:text-2xl font-medium text-white truncate"
                               >
                                 {project.title}
                               </h2>
-                              <div className="flex items-center gap-2"
+                              <div className="flex items-center gap-2 flex-wrap"
                               >
                                 {isInDevelopment && (
                                   <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-400"
                                   >
-                                    In Development
+                                    In Dev
                                   </span>
                                 )}
                                 <span
@@ -119,42 +119,47 @@ export default function ProjectsPage() {
                         </div>
 
                         {/* Description */}
-                        <p className="mb-6 text-lg leading-relaxed text-[var(--text-secondary)]"
+                        <p className="mb-4 sm:mb-6 text-base sm:text-lg leading-relaxed text-[var(--text-secondary)]"
                         >
                           {project.longDescription}
                         </p>
 
                         {/* Tech Stack */}
-                        <div className="mb-6">
-                          <h4 className="mb-3 text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider"
+                        <div className="mb-4 sm:mb-6">
+                          <h4 className="mb-2 sm:mb-3 text-xs sm:text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider"
                           >
                             Tech Stack
                           </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {project.techStack.map((tech) => (
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                            {project.techStack.map((tech, idx) => (
                               <span
                                 key={tech}
-                                className="rounded-full bg-white/5 px-3 py-1 text-sm text-[var(--text-secondary)]"
+                                className={`rounded-full bg-white/5 px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-[var(--text-secondary)] ${idx >= 4 ? 'hidden sm:inline-block' : ''}`}
                               >
                                 {tech}
                               </span>
                             ))}
+                            {project.techStack.length > 4 && (
+                              <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-[var(--text-secondary)] sm:hidden">
+                                +{project.techStack.length - 4}
+                              </span>
+                            )}
                           </div>
                         </div>
 
-                        {/* Features Preview */}
-                        <div className="mb-8">
+                        {/* Features Preview - Hidden on mobile */}
+                        <div className="mb-6 sm:mb-8 hidden sm:block">
                           <ul className="space-y-2">
                             {project.features.slice(0, 3).map((feature) => (
                               <li
                                 key={feature}
-                                className="flex items-center gap-2 text-[var(--text-secondary)]"
+                                className="flex items-center gap-2 text-[var(--text-secondary)] text-sm"
                               >
                                 <div
-                                  className="h-1.5 w-1.5 rounded-full"
+                                  className="h-1.5 w-1.5 rounded-full flex-shrink-0"
                                   style={{ backgroundColor: project.accentColor }}
                                 />
-                                {feature}
+                                <span className="line-clamp-1">{feature}</span>
                               </li>
                             ))}
                           </ul>
@@ -162,10 +167,10 @@ export default function ProjectsPage() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 sm:gap-4">
                         <Link
                           href={`/projects/${project.id}`}
-                          className="group/btn inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-all"
+                          className="group/btn inline-flex items-center gap-1.5 sm:gap-2 rounded-lg px-3 sm:px-4 py-2 text-sm font-medium text-white transition-all"
                           style={{
                             backgroundColor: project.accentColor,
                           }}
@@ -179,9 +184,10 @@ export default function ProjectsPage() {
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-lg border border-[var(--glass-border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--glass-border-hover)] hover:text-white"
+                            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-[var(--glass-border)] px-3 sm:px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--glass-border-hover)] hover:text-white"
                           >
-                            Visit Site
+                            <span className="hidden sm:inline">Visit Site</span>
+                            <span className="sm:hidden">Visit</span>
                             <ExternalLink className="h-4 w-4" />
                           </a>
                         )}
@@ -189,7 +195,7 @@ export default function ProjectsPage() {
                     </div>
 
                     {/* Visual Side */}
-                    <div className="relative min-h-[300px] bg-gradient-to-br from-white/5 to-transparent p-8 lg:min-h-0"
+                    <div className="relative min-h-[180px] sm:min-h-[240px] lg:min-h-0 bg-gradient-to-br from-white/5 to-transparent p-5 sm:p-6 lg:p-8"
                     >
                       {/* Placeholder for project screenshot */}
                       <div
@@ -200,10 +206,10 @@ export default function ProjectsPage() {
                       >
                         <div className="text-center">
                           <Icon
-                            className="mx-auto mb-4 h-16 w-16 opacity-30"
+                            className="mx-auto mb-2 sm:mb-4 h-10 w-10 sm:h-16 sm:w-16 opacity-30"
                             style={{ color: project.accentColor }}
                           />
-                          <p className="text-sm text-[var(--text-muted)]">
+                          <p className="text-xs sm:text-sm text-[var(--text-muted)]">
                             {project.shortName} Preview
                           </p>
                         </div>

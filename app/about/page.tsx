@@ -184,7 +184,7 @@ export default function AboutPage() {
           animation="fadeUp"
           delay={0.2}
           staggerDelay={0.04}
-          className="mb-8 text-5xl font-light text-white sm:text-6xl lg:text-7xl"
+          className="mb-8 text-4xl font-light text-white sm:text-5xl md:text-6xl lg:text-7xl"
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
@@ -364,20 +364,82 @@ export default function AboutPage() {
       </section>
 
       {/* Journey Section */}
-      <section className="py-24">
+      <section className="py-12 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-12"
+          className="mb-8 md:mb-12"
         >
-          <h2 className="mb-4 text-3xl font-light text-white">The Journey</h2>
+          <h2 className="mb-4 text-2xl md:text-3xl font-light text-white">The Journey</h2>
           <div className="h-1 w-20 rounded-full"
           style={{ backgroundColor: "var(--accent-human)" }} />
         </motion.div>
 
-        <div className="space-y-8">
+        {/* Mobile: Horizontal scroll layout */}
+        <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4">
+          <div className="flex gap-4" style={{ width: "max-content" }}>
+            {[
+              {
+                year: "2016",
+                title: "First Code",
+                description: "Started learning Python, GML (GameMaker Language), and C# for Unity—driven by a passion for game development and the desire to bring creative ideas to life through code.",
+              },
+              {
+                year: "2020",
+                title: "BSc Pharmaceutical Chemistry",
+                description: "Began studying Pharmaceutical Chemistry at Queen Mary's University of London. This chemistry-focused degree provided a strong foundation in analytical thinking and molecular science.",
+              },
+              {
+                year: "2023",
+                title: "Graduate Entry Medicine",
+                description: "Achieved First Class Honours and transitioned to the 4-year Graduate Entry Medicine program at the University of Southampton. Projected graduation in 2027.",
+              },
+              {
+                year: "2025",
+                title: "MedTracker Launch",
+                description: "Released MedTracker—a UKMLA-based medical education tracker providing a ticklist version of the UKMLA content map.",
+              },
+              {
+                year: "2026",
+                title: "BlockOut & Increment",
+                description: "Launched BlockOut—a WinDirStat-inspired task visualiser. Increment is being rebuilt as a web-first application with AI-powered features.",
+              },
+            ].map((milestone, index) => (
+              <motion.div
+                key={milestone.year}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="w-[280px] flex-shrink-0"
+              >
+                <GlassCard className="h-full p-5" hover>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium text-white flex-shrink-0"
+                      style={{ backgroundColor: "var(--accent-human)" }}
+                    >
+                      {milestone.year.slice(-2)}
+                    </div>
+                    <div className="text-sm font-medium"
+                    style={{ color: "var(--accent-human)" }}>
+                      {milestone.year}
+                    </div>
+                  </div>
+                  <h3 className="mb-2 text-base font-medium text-white">
+                    {milestone.title}
+                  </h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{milestone.description}</p>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: Timeline layout */}
+        <div className="hidden md:block space-y-8">
           {[
             {
               year: "2016",

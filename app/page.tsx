@@ -54,7 +54,7 @@ export default function HomePage() {
             animation="fadeUp"
             delay={0.3}
             staggerDelay={0.05}
-            className="text-6xl font-light tracking-tight text-white sm:text-7xl lg:text-8xl"
+            className="text-4xl font-light tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
           />
         </div>
 

@@ -1,14 +1,14 @@
-[00:03:21.209] Browser ERROR   ./app/globals.css:1269:22
+[00:11:38.975] Browser ERROR   ./app/globals.css:1275:25
 Parsing CSS source code failed
-  1267 |   }
-  1268 |   .text-\[var\(--acce\7f 1�imary\)\] {
-> 1269 |     color: var(--acce1�imary);
-       |                      ^
-  1270 |   }
-  1271 |   .text-\[var\(--text-muted\)\] {
-  1272 |     color: var(--text-muted);
+  1273 |   }
+  1274 |   .text-\[var\(--accent�\18 \?\)\] {
+> 1275 |     color: var(--accent�?);
+       |                         ^
+  1276 |   }
+  1277 |   .text-\[var\(--text-muted\)\] {
+  1278 |     color: var(--text-muted);
 
-Unexpected token Delim('\u{7f}')
+Unexpected token Delim('\u{18}')
 
 Import trace:
   Client Component Browser:

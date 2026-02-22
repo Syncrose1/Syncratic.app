@@ -182,7 +182,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <GlassCard
-                className="group relative h-full p-8 transition-all duration-500"
+                className="group relative h-full transition-all duration-500"
                 hover
               >
                 {/* Accent Line */}
@@ -190,8 +190,10 @@ export default function HomePage() {
                   className="absolute left-0 top-0 h-full w-1 rounded-l-2xl opacity-0 transition-opacity group-hover:opacity-100"
                   style={{ backgroundColor: project.color }}
                 />
-
-                <div className="relative z-10">
+                
+                {/* Content with padding */}
+                {/* Content with padding */}
+                <div className="relative z-10 p-8 pl-10">
                   <h3
                     className="mb-2 text-xl font-medium text-white transition-colors"
                     style={{ color: project.color }}

@@ -61,9 +61,9 @@ export function Topbar() {
           </span>
         </Link>
 
-        {/* Navigation */}
+        {/* Navigation - filters out hidden pages */}
         <nav className="flex items-center gap-1">
-          {mainNavigation.map((item) => {
+          {mainNavigation.filter(item => !item.hidden).map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
             

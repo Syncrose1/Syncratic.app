@@ -12,6 +12,11 @@ import {
 
 /**
  * Navigation item type
+ * 
+ * FOR FUTURE CODING AGENTS:
+ * - hidden: Set to true to hide a page from navigation while keeping it accessible via URL
+ * - Useful for pages under construction or temporarily disabled
+ * - The page will still exist and be navigable directly, but won't show in menus
  */
 export interface NavItem {
   id: string;
@@ -20,15 +25,22 @@ export interface NavItem {
   icon: LucideIcon;
   theme: "home" | "about" | "projects" | "research" | "contact";
   description: string;
+  hidden?: boolean; // Set to true to hide from navigation
 }
 
 /**
  * Main navigation items
+ * 
+ * To hide a page: Set hidden: true on the item
+ * To show a page: Remove hidden property or set hidden: false
+ * 
+ * Current visible pages: Home, Me?, Projects, Connect
+ * Current hidden pages: Research (hidden until real research content is available)
  */
 export const mainNavigation: NavItem[] = [
   {
     id: "home",
-    label: "Nexus",
+    label: "Home",
     href: "/",
     icon: Home,
     theme: "home",
@@ -36,7 +48,7 @@ export const mainNavigation: NavItem[] = [
   },
   {
     id: "about",
-    label: "Observer",
+    label: "Me?",
     href: "/about",
     icon: User,
     theme: "about",
@@ -44,7 +56,7 @@ export const mainNavigation: NavItem[] = [
   },
   {
     id: "projects",
-    label: "Systems",
+    label: "Projects",
     href: "/projects",
     icon: Briefcase,
     theme: "projects",
@@ -52,19 +64,20 @@ export const mainNavigation: NavItem[] = [
   },
   {
     id: "research",
-    label: "Discovery",
+    label: "Research",
     href: "/research",
     icon: FlaskConical,
     theme: "research",
     description: "What I explore",
+    hidden: true, // Hidden until real research content is available
   },
   {
     id: "contact",
-    label: "Transmission",
+    label: "Connect",
     href: "/contact",
     icon: Mail,
     theme: "contact",
-    description: "Connect",
+    description: "Get in touch",
   },
 ];
 
@@ -171,24 +184,21 @@ export interface ResearchItem {
 
 /**
  * Research data
+ * 
+ * NOTE: Currently empty as research page is hidden.
+ * Add real research items here when available.
+ * To show research: 1) Add items here, 2) Set hidden: false in mainNavigation
  */
 export const researchItems: ResearchItem[] = [
-  {
-    id: "research-1",
-    title: "AI in Medical Diagnostics",
-    description: "Exploring the application of machine learning algorithms in early disease detection and diagnostic assistance.",
-    category: "Medical AI",
-    year: "2024",
-    status: "ongoing",
-  },
-  {
-    id: "research-2",
-    title: "Cognitive Load in Medical Education",
-    description: "Investigating how digital tools impact learning efficiency and cognitive load in medical students.",
-    category: "Medical Education",
-    year: "2023",
-    status: "completed",
-  },
+  // Add real research items here when available
+  // {
+  //   id: "research-1",
+  //   title: "Your Real Research Title",
+  //   description: "Description of your actual research project",
+  //   category: "Category",
+  //   year: "2024",
+  //   status: "ongoing",
+  // },
 ];
 
 /**

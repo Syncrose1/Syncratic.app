@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNavigation } from "@/lib/data";
 import { setPageTheme, type Theme } from "@/lib/utils";
 
 export function MorphingSidebar() {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<Theme>("home");
   const pathname = usePathname();
 
@@ -30,8 +32,15 @@ export function MorphingSidebar() {
   };
 
   return (
-    <aside className="fixed right-0 top-0 z-50 h-screen w-16">
-      <div className="flex h-full flex-col">
+    <motion.aside 
+      className="fixed right-0 top-0 z-50 h-screen"
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
+      initial={false}
+      animate={{ width: isExpanded ? 180 : 64 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+    >
+      <nav className="flex h-full w-full flex-col">
         {mainNavigation.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -40,12 +49,12 @@ export function MorphingSidebar() {
             <Link 
               key={item.id} 
               href={item.href}
-              className="group relative flex h-[20%] w-full items-center justify-center border-l border-white/5 transition-colors duration-300 hover:bg-white/[0.04]"
+              className="group relative flex h-[20%] w-full items-center border-l border-white/5 transition-colors duration-300 hover:bg-white/[0.04]"
               style={{
                 backgroundColor: isActive ? "rgba(255, 255, 255, 0.06)" : "rgba(255, 255, 255, 0.02)",
               }}
             >
-              {/* Glass effect overlay */}
+              {/* Glass effect */}
               <div 
                 className="pointer-events-none absolute inset-0"
                 style={{ backdropFilter: "blur(12px)" }}
@@ -65,32 +74,35 @@ export function MorphingSidebar() {
                 style={{ backgroundColor: getAccentColor() }}
               />
 
-              {/* Content */}
-              <div className="relative z-10 flex flex-col items-center justify-center gap-2">
-                <div
-                  className="transition-all duration-300 group-hover:scale-110"
-                  style={{
+              {/* Content - changes based on expanded state */}
+              <div className="relative z-10 flex w-full items-center px-5">
+                {/* Icon */}
+                <motion.div
+                  animate={{
                     color: isActive ? getAccentColor() : "rgba(255, 255, 255, 0.6)",
                   }}
                 >
                   <Icon className="h-5 w-5" />
-                </div>
+                </motion.div>
 
-                <span 
-                  className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider"
-                  style={{ 
-                    color: isActive ? getAccentColor() : "rgba(255, 255, 255, 0.7)",
-                    writingMode: "vertical-rl",
-                    textOrientation: "mixed",
+                {/* Label - horizontal when expanded */}
+                <motion.span 
+                  className="ml-3 whitespace-nowrap text-sm font-medium"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ 
+                    opacity: isExpanded ? 1 : 0,
+                    x: isExpanded ? 0 : -10,
+                    color: isActive ? getAccentColor() : "#ffffff",
                   }}
+                  transition={{ duration: 0.2, delay: isExpanded ? 0.1 : 0 }}
                 >
                   {item.label}
-                </span>
+                </motion.span>
               </div>
             </Link>
           );
         })}
-      </div>
-    </aside>
+      </nav>
+    </motion.aside>
   );
 }

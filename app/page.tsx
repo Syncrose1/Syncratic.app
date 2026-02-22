@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AnimatedText } from "@/components/ui/AnimatedText";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Sparkles } from "lucide-react";
 
 /**
  * Home Page
@@ -26,12 +26,9 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <img 
-            src="/Syncratic-Logo.svg" 
-            alt=""
-            className="h-5 w-5 object-contain brightness-0 invert opacity-80"
-          />
-          <span className="text-sm font-medium tracking-widest text-[var(--accent-primary)] uppercase">
+          <Sparkles className="h-4 w-4 text-[var(--accent-primary)]" />
+          <span className="text-sm font-medium tracking-widest text-[var(--accent-primary)] uppercase"
+          >
             Welcome to my portfolio
           </span>
         </motion.div>

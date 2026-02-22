@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 
 /**
  * MouseEffects Component
  * 
- * Combines two elegant mouse interactions:
- * 1. Spotlight effect - A subtle glow that follows the cursor
- * 2. Floating particles - Ambient particles that react to mouse proximity
+ * Floating particles that react to mouse proximity
  */
 
 interface Particle {
@@ -24,17 +22,10 @@ export function MouseEffects() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isActive, setIsActive] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
-  
-  // Smooth spring physics for fluid movement
-  const springConfig = { damping: 25, stiffness: 200 };
-  const smoothX = useMotionValue(0);
-  const smoothY = useMotionValue(0);
-  const springX = useSpring(smoothX, springConfig);
-  const springY = useSpring(smoothY, springConfig);
 
-  // Generate random particles on mount
+  // Generate random particles on mount - 50 particles
   useEffect(() => {
-    const newParticles: Particle[] = Array.from({ length: 25 }, (_, i) => ({
+    const newParticles: Particle[] = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -48,8 +39,6 @@ export function MouseEffects() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
-      smoothX.set(e.clientX);
-      smoothY.set(e.clientY);
       setIsActive(true);
     };
 
@@ -62,58 +51,11 @@ export function MouseEffects() {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [smoothX, smoothY]);
+  }, []);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      
-      {/* ============================================
-          SPOTLIGHT EFFECT
-          A subtle radial glow that follows the cursor
-         ============================================ */}
-      
-      <motion.div
-        className="absolute w-[400px] h-[400px] -ml-[200px] -mt-[200px] rounded-full"
-        style={{
-          x: springX,
-          y: springY,
-          background: "radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 60%)",
-          filter: "blur(40px)",
-        }}
-        animate={{
-          scale: isActive ? 1 : 0.5,
-          opacity: isActive ? 1 : 0,
-        }}
-        transition={{
-          scale: { duration: 0.5, ease: "easeOut" },
-          opacity: { duration: 0.3 },
-        }}
-      />
-
-      {/* Inner intense core */}
-      <motion.div
-        className="absolute w-32 h-32 -ml-16 -mt-16 rounded-full"
-        style={{
-          x: springX,
-          y: springY,
-          background: "radial-gradient(circle at center, rgba(255,255,255,0.06) 0%, transparent 70%)",
-          filter: "blur(20px)",
-        }}
-        animate={{
-          scale: isActive ? [1, 1.2, 1] : 0.5,
-          opacity: isActive ? 1 : 0,
-        }}
-        transition={{
-          scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-          opacity: { duration: 0.3 },
-        }}
-      />
-
-      {/* ============================================
-          FLOATING PARTICLES
-          Ambient particles that react to mouse
-         ============================================ */}
-      
+      {/* Floating particles that react to mouse */}
       {particles.map((particle) => (
         <Particle
           key={particle.id}
@@ -162,8 +104,10 @@ function Particle({
         top: `${particle.y}%`,
         width: particle.size,
         height: particle.size,
-        backgroundColor: "rgba(255, 255, 255, 0.4)",
-        boxShadow: `0 0 ${particle.size * 2}px rgba(255, 255, 255, 0.3)`,
+        // 20% brighter: 0.4 * 1.2 = 0.48
+        backgroundColor: "rgba(255, 255, 255, 0.48)",
+        // 20% brighter glow: 0.3 * 1.2 = 0.36
+        boxShadow: `0 0 ${particle.size * 2}px rgba(255, 255, 255, 0.36)`,
       }}
       animate={{
         x: offsetX,
@@ -177,7 +121,6 @@ function Particle({
         opacity: { duration: 0.3 },
         scale: { duration: 0.3 },
       }}
-      // Floating animation
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 0.3 }}
     >

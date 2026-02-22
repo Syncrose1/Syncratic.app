@@ -7,14 +7,6 @@ import { usePathname } from "next/navigation";
 import { mainNavigation } from "@/lib/data";
 import { setPageTheme, type Theme } from "@/lib/utils";
 
-/**
- * RightSidebar Navigation Component
- * 
- * A right-side navigation with translucent full-height bars.
- * Each bar represents a navigation item, divided equally.
- * On hover: bar expands and changes color.
- */
-
 export function MorphingSidebar() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTheme, setCurrentTheme] = useState<Theme>("home");
@@ -30,28 +22,17 @@ export function MorphingSidebar() {
 
   const getAccentColor = () => {
     switch (currentTheme) {
-      case "home":
-        return "var(--accent-primary)";
-      case "about":
-        return "var(--accent-human)";
-      case "projects":
-        return "var(--accent-tech)";
-      case "research":
-        return "var(--accent-discovery)";
-      case "contact":
-        return "var(--accent-contact)";
-      default:
-        return "var(--accent-primary)";
+      case "home": return "var(--accent-primary)";
+      case "about": return "var(--accent-human)";
+      case "projects": return "var(--accent-tech)";
+      case "research": return "var(--accent-discovery)";
+      case "contact": return "var(--accent-contact)";
+      default: return "var(--accent-primary)";
     }
   };
 
   return (
-    <motion.aside
-      className="fixed right-0 top-0 z-50 h-screen"
-      initial={{ x: 100 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
+    <aside className="fixed right-0 top-0 z-50 h-screen w-16">
       <nav className="flex h-full flex-col">
         {mainNavigation.map((item, index) => {
           const isActive = pathname === item.href;
@@ -61,97 +42,80 @@ export function MorphingSidebar() {
           return (
             <Link 
               key={item.id} 
-              href={item.href} 
-              className="flex-1"
-              style={{ height: `${100 / mainNavigation.length}%` }}
+              href={item.href}
+              className="flex h-1/5 w-full"
             >
               <motion.div
-                className="relative flex h-full cursor-pointer flex-col items-center justify-center overflow-hidden border-l border-white/10"
+                className="relative flex h-full cursor-pointer flex-col items-center justify-center gap-2 border-l border-white/10"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                initial={{ width: 80 }}
                 animate={{
-                  width: isHovered ? 200 : 80,
+                  width: isHovered ? 140 : 64,
                   backgroundColor: isActive
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : isHovered
                     ? "rgba(255, 255, 255, 0.08)"
-                    : "rgba(255, 255, 255, 0.03)",
+                    : isHovered
+                    ? "rgba(255, 255, 255, 0.05)"
+                    : "rgba(255, 255, 255, 0.02)",
                 }}
                 transition={{
-                  width: { type: "spring", stiffness: 300, damping: 30 },
-                  backgroundColor: { duration: 0.2 },
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 30,
                 }}
                 style={{
                   backdropFilter: "blur(12px)",
                   WebkitBackdropFilter: "blur(12px)",
                 }}
               >
-                {/* Active indicator line */}
+                {/* Active indicator */}
                 {isActive && (
                   <motion.div
-                    className="absolute left-0 top-0 h-full w-1"
+                    className="absolute left-0 top-0 h-full w-[2px]"
                     style={{ backgroundColor: getAccentColor() }}
                     layoutId="activeIndicator"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
                 )}
 
-                {/* Glass shine effect */}
-                <div 
-                  className="absolute inset-0 opacity-30"
-                  style={{
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%)"
-                  }}
-                />
-
-                {/* Hover gradient overlay */}
-                <motion.div 
+                {/* Hover highlight */}
+                <motion.div
                   className="absolute inset-0"
-                  animate={{
-                    opacity: isHovered ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.3 }}
+                  animate={{ opacity: isHovered ? 1 : 0 }}
                   style={{
-                    background: `linear-gradient(90deg, ${getAccentColor()}15 0%, transparent 100%)`,
+                    background: `linear-gradient(90deg, ${getAccentColor()}10, transparent)`,
                   }}
                 />
 
-                {/* Content */}
-                <div className="relative z-10 flex items-center gap-4 px-5">
-                  {/* Icon */}
-                  <motion.div
-                    animate={{
-                      color: isActive 
-                        ? getAccentColor() 
-                        : isHovered 
-                        ? "#ffffff" 
-                        : "rgba(255, 255, 255, 0.6)",
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Icon className="h-6 w-6 shrink-0" />
-                  </motion.div>
+                {/* Icon */}
+                <motion.div
+                  animate={{
+                    scale: isHovered ? 1.1 : 1,
+                    color: isActive 
+                      ? getAccentColor() 
+                      : isHovered 
+                      ? "#ffffff" 
+                      : "rgba(255, 255, 255, 0.6)",
+                  }}
+                >
+                  <Icon className="h-5 w-5" />
+                </motion.div>
 
-                  {/* Label - appears on hover */}
-                  <motion.span
-                    className="whitespace-nowrap text-sm font-medium"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{
-                      opacity: isHovered ? 1 : 0,
-                      x: isHovered ? 0 : -10,
-                      color: isActive ? getAccentColor() : "#ffffff",
-                    }}
-                    transition={{ duration: 0.2, delay: isHovered ? 0.05 : 0 }}
-                  >
-                    {item.label}
-                  </motion.span>
-                </div>
+                {/* Label - vertical text */}
+                <span 
+                  className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider"
+                  style={{ 
+                    color: isActive ? getAccentColor() : "rgba(255, 255, 255, 0.7)",
+                    writingMode: "vertical-rl",
+                    textOrientation: "mixed",
+                    transform: "rotate(180deg)",
+                  }}
+                >
+                  {item.label}
+                </span>
               </motion.div>
             </Link>
           );
         })}
       </nav>
-    </motion.aside>
+    </aside>
   );
 }

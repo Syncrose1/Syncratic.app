@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNavigation } from "@/lib/data";
@@ -42,7 +43,7 @@ export function MorphingSidebar() {
             <Link 
               key={item.id} 
               href={item.href}
-              className="group relative flex h-1/5 w-full items-center justify-center overflow-hidden border-l border-white/5 transition-all duration-300"
+              className="relative flex h-1/5 w-full items-center justify-center border-l border-white/5"
               style={{
                 backgroundColor: isActive
                   ? "rgba(255, 255, 255, 0.06)"
@@ -54,33 +55,36 @@ export function MorphingSidebar() {
             >
               {/* Active indicator */}
               {isActive && (
-                <div
+                <motion.div
                   className="absolute left-0 top-0 h-full w-[2px]"
                   style={{ backgroundColor: getAccentColor() }}
+                  layoutId="activeIndicator"
                 />
               )}
 
-              {/* Hover background */}
-              <div 
-                className="absolute inset-0 transition-opacity duration-300"
+              {/* Hover overlay - expands outward without affecting layout */}
+              <motion.div 
+                className="absolute right-0 top-0 h-full"
+                initial={false}
+                animate={{
+                  width: isHovered ? 140 : 64,
+                  backgroundColor: isHovered ? "rgba(255, 255, 255, 0.04)" : "transparent",
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 30,
+                }}
                 style={{
-                  background: `linear-gradient(90deg, ${getAccentColor()}08, transparent)`,
-                  opacity: isHovered ? 1 : 0,
+                  background: isHovered ? `linear-gradient(90deg, ${getAccentColor()}08, transparent)` : undefined,
                 }}
               />
 
-              {/* Expanding container */}
-              <div 
-                className="relative z-10 flex flex-col items-center justify-center gap-3 transition-all duration-300"
-                style={{
-                  width: isHovered ? 120 : 64,
-                }}
-              >
-                {/* Icon */}
-                <div
-                  className="transition-all duration-300"
-                  style={{
-                    transform: isHovered ? "scale(1.1)" : "scale(1)",
+              {/* Content - always centered */}
+              <div className="relative z-10 flex flex-col items-center justify-center gap-2">
+                <motion.div
+                  animate={{
+                    scale: isHovered ? 1.1 : 1,
                     color: isActive 
                       ? getAccentColor() 
                       : isHovered 
@@ -89,11 +93,10 @@ export function MorphingSidebar() {
                   }}
                 >
                   <Icon className="h-5 w-5" />
-                </div>
+                </motion.div>
 
-                {/* Label - vertical */}
                 <span 
-                  className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider transition-colors duration-300"
+                  className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider"
                   style={{ 
                     color: isActive ? getAccentColor() : "rgba(255, 255, 255, 0.7)",
                     writingMode: "vertical-rl",

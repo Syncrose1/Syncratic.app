@@ -33,20 +33,16 @@ export function MorphingSidebar() {
 
   return (
     <aside className="fixed right-0 top-0 z-50 h-screen w-16">
-      <nav className="flex h-full flex-col">
+      <div className="grid h-full grid-rows-5">
         {mainNavigation.map((item, index) => {
           const isActive = pathname === item.href;
           const isHovered = hoveredIndex === index;
           const Icon = item.icon;
           
           return (
-            <Link 
-              key={item.id} 
-              href={item.href}
-              className="flex h-1/5 w-full"
-            >
+            <Link key={item.id} href={item.href} className="relative block w-full">
               <motion.div
-                className="relative flex h-full cursor-pointer flex-col items-center justify-center gap-2 border-l border-white/10"
+                className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-2 border-l border-white/10"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 animate={{
@@ -99,14 +95,13 @@ export function MorphingSidebar() {
                   <Icon className="h-5 w-5" />
                 </motion.div>
 
-                {/* Label - vertical text */}
+                {/* Vertical Label */}
                 <span 
                   className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider"
                   style={{ 
                     color: isActive ? getAccentColor() : "rgba(255, 255, 255, 0.7)",
                     writingMode: "vertical-rl",
                     textOrientation: "mixed",
-                    transform: "rotate(180deg)",
                   }}
                 >
                   {item.label}
@@ -115,7 +110,7 @@ export function MorphingSidebar() {
             </Link>
           );
         })}
-      </nav>
+      </div>
     </aside>
   );
 }

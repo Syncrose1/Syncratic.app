@@ -9,7 +9,7 @@ import { GravityWell } from "./GravityWell";
  * Creates a subtle, animated background with gradient orbs that drift slowly.
  * Provides the "space" and "vastness" feel without being distracting.
  * 
- * Now includes GravityWell effect that follows mouse cursor.
+ * Includes GravityWell effect that applies radial distortion to the background.
  */
 
 export function AmbientBackground() {
@@ -82,7 +82,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Subtle grid pattern - base layer (will be distorted by gravity well) */}
+      {/* Grid pattern - this is what gets distorted by the gravity well */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -90,11 +90,11 @@ export function AmbientBackground() {
             linear-gradient(to right, var(--text-primary) 1px, transparent 1px),
             linear-gradient(to bottom, var(--text-primary) 1px, transparent 1px)
           `,
-          backgroundSize: "100px 100px",
+          backgroundSize: "80px 80px",
         }}
       />
 
-      {/* Gravity Well Effect - Mouse following distortion */}
+      {/* Gravity Well - applies radial distortion effect */}
       <GravityWell />
     </div>
   );

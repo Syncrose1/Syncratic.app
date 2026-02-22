@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MorphingSidebar } from "@/components/navigation/MorphingSidebar";
+import { Topbar } from "@/components/navigation/Topbar";
 import { AmbientBackground } from "@/components/ui/AmbientBackground";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
  * PageContainer Component
  * 
  * Wraps all pages with:
- * - MorphingSidebar navigation
+ * - Topbar navigation
  * - AmbientBackground effects
  * - Consistent layout structure
  * - Page transition animations
@@ -32,13 +32,13 @@ export function PageContainer({
       <AmbientBackground />
 
       {/* Navigation */}
-      <MorphingSidebar />
+      <Topbar />
 
       {/* Main Content */}
       <motion.main
         className={cn(
-          "min-h-screen pl-8 pt-8 pb-8 pr-20",
-          fullWidth && "pr-20",
+          "min-h-screen px-8 pb-8 pt-24",
+          fullWidth && "px-8",
           className
         )}
         initial={{ opacity: 0, y: 20 }}

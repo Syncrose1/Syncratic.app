@@ -1,0 +1,16 @@
+[00:03:21.209] Browser ERROR   ./app/globals.css:1269:22
+Parsing CSS source code failed
+  1267 |   }
+  1268 |   .text-\[var\(--acce\7f 1�imary\)\] {
+> 1269 |     color: var(--acce1�imary);
+       |                      ^
+  1270 |   }
+  1271 |   .text-\[var\(--text-muted\)\] {
+  1272 |     color: var(--text-muted);
+
+Unexpected token Delim('\u{7f}')
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component]

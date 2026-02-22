@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { GravityWell } from "./GravityWell";
+import { MouseEffects } from "./MouseEffects";
 
 /**
  * AmbientBackground Component
@@ -9,7 +9,7 @@ import { GravityWell } from "./GravityWell";
  * Creates a subtle, animated background with gradient orbs that drift slowly.
  * Provides the "space" and "vastness" feel without being distracting.
  * 
- * Includes GravityWell effect that applies radial distortion to the background.
+ * Includes mouse spotlight effect and interactive floating particles.
  */
 
 export function AmbientBackground() {
@@ -82,7 +82,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Grid pattern - this is what gets distorted by the gravity well */}
+      {/* Grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -94,8 +94,8 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Gravity Well - applies radial distortion effect */}
-      <GravityWell />
+      {/* Mouse spotlight effect and floating particles */}
+      <MouseEffects />
     </div>
   );
 }

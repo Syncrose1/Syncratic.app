@@ -1,12 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { GravityWell } from "./GravityWell";
 
 /**
  * AmbientBackground Component
  * 
  * Creates a subtle, animated background with gradient orbs that drift slowly.
  * Provides the "space" and "vastness" feel without being distracting.
+ * 
+ * Now includes GravityWell effect that follows mouse cursor.
  */
 
 export function AmbientBackground() {
@@ -79,7 +82,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Subtle grid pattern */}
+      {/* Subtle grid pattern - base layer (will be distorted by gravity well) */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -90,6 +93,9 @@ export function AmbientBackground() {
           backgroundSize: "100px 100px",
         }}
       />
+
+      {/* Gravity Well Effect - Mouse following distortion */}
+      <GravityWell />
     </div>
   );
 }

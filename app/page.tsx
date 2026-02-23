@@ -1,10 +1,103 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AnimatedText } from "@/components/ui/AnimatedText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ArrowDown, Sparkles } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+
+/**
+ * FloatingLogo Component
+ * 
+ * Logo that floats on the right side and moves away from mouse.
+ */
+function FloatingLogo({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
+  const logoRef = useRef<HTMLDivElement>(null);
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
+  
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const springConfig = { damping: 20, stiffness: 300 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+
+  useEffect(() => {
+    if (logoRef.current && containerRef.current) {
+      const rect = logoRef.current.getBoundingClientRect();
+      const containerRect = containerRef.current.getBoundingClientRect();
+      setOrigin({
+        x: rect.left - containerRect.left + rect.width / 2,
+        y: rect.top - containerRect.top + rect.height / 2
+      });
+    }
+  }, [containerRef]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const mouseX = e.clientX - containerRect.left;
+      const mouseY = e.clientY - containerRect.top;
+      
+      const dx = mouseX - origin.x;
+      const dy = mouseY - origin.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      const repelRadius = 150;
+      const repelStrength = 80;
+      
+      if (distance < repelRadius && distance > 0) {
+        const force = (1 - distance / repelRadius) * repelStrength;
+        const angle = Math.atan2(dy, dx);
+        
+        x.set(-Math.cos(angle) * force);
+        y.set(-Math.sin(angle) * force);
+      } else {
+        x.set(0);
+        y.set(0);
+      }
+    };
+
+    const handleMouseLeave = () => {
+      x.set(0);
+      y.set(0);
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, [origin, x, y, containerRef]);
+
+  return (
+    <motion.div
+      ref={logoRef}
+      className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-32 cursor-pointer hidden lg:block"
+      style={{ x: springX, y: springY }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, delay: 0.25 }}
+      whileHover={{ scale: 1.1 }}
+    >
+      <img 
+        src="/Syncratic-Logo.svg" 
+        alt="Syncratic Logo"
+        className="w-full h-full object-contain brightness-0 invert opacity-90 drop-shadow-2xl"
+      />
+    </motion.div>
+  );
+}
 
 /**
  * Home Page
@@ -15,10 +108,15 @@ import { ArrowDown, Sparkles } from "lucide-react";
  */
 
 export default function HomePage() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  
   return (
     <PageContainer>
       {/* Hero Section */}
-      <section className="flex min-h-[90vh] flex-col justify-center">
+      <section ref={heroRef} className="relative flex min-h-[90vh] flex-col justify-center">
+        {/* Floating Logo on Right */}
+        <FloatingLogo containerRef={heroRef} />
+
         {/* Eyebrow */}
         <motion.div
           className="mb-6 flex items-center gap-2"
@@ -31,20 +129,6 @@ export default function HomePage() {
           >
             Welcome to the portfolio of...
           </span>
-        </motion.div>
-
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.25 }}
-          className="mb-6"
-        >
-          <img 
-            src="/Syncratic-Logo.svg" 
-            alt="Syncratic Logo"
-            className="w-24 h-16 object-contain brightness-0 invert opacity-90"
-          />
         </motion.div>
 
         {/* Main Title */}

@@ -1,16 +1,2 @@
-[00:11:38.975] Browser ERROR   ./app/globals.css:1275:25
-Parsing CSS source code failed
-  1273 |   }
-  1274 |   .text-\[var\(--accent�\18 \?\)\] {
-> 1275 |     color: var(--accent�?);
-       |                         ^
-  1276 |   }
-  1277 |   .text-\[var\(--text-muted\)\] {
-  1278 |     color: var(--text-muted);
-
-Unexpected token Delim('\u{18}')
-
-Import trace:
-  Client Component Browser:
-    ./app/globals.css [Client Component Browser]
-    ./app/layout.tsx [Server Component]
+[00:00:00.600] Server  LOG     ✓ Ready in 444ms
+[00:00:03.201] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

@@ -3,157 +3,249 @@
 /// <reference types="@react-three/fiber" />
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useState, useMemo } from "react";
-import { EffectComposer, GodRays } from "@react-three/postprocessing";
-import { BlendFunction, KernelSize } from "postprocessing";
+import { useRef, useMemo } from "react";
 import * as THREE from "three";
 
-// ── 1. Fog + background ───────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Volumetric fog shaders
+//
+// The vertex shader bypasses the camera/projection matrices so the plane
+// always covers exactly the full screen regardless of camera position.
+// The fragment shader ray-marches through 6-octave fractal Brownian motion
+// noise, accumulating fog density and Mie-scattered light from the top-right
+// "sun".  This produces the soft, organic, cloud-like fog from the reference.
+// ─────────────────────────────────────────────────────────────────────────────
 
-function SceneSetup() {
-  const { scene } = useThree();
-  useMemo(() => {
-    scene.background = new THREE.Color(0x050508);
-    scene.fog = new THREE.FogExp2(0x050508, 0.08);
-  }, [scene]);
-  return null;
-}
+const fogVert = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    // Position directly in NDC — bypasses all camera transforms.
+    // PlaneGeometry(2,2) has vertices at ±1, which map to screen corners.
+    gl_Position = vec4(position.xy, 1.0, 1.0);
+  }
+`;
 
-// ── 2. Fog volume ─────────────────────────────────────────────────────────────
-// 600 particles scattered at depth –2 → –26.  Near ones are clearly visible;
-// far ones fade into the void via FogExp2.  This is the "visible medium" the
-// god rays stream through.
+const fogFrag = /* glsl */ `
+  varying vec2 vUv;
+  uniform float uTime;
+  uniform float uAspect;
 
-function FogVolume() {
-  const geo = useMemo(() => {
-    const count = 600;
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      pos[i * 3]     = (Math.random() - 0.5) * 34;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 22;
-      pos[i * 3 + 2] = -(Math.random() * 24 + 2);
+  // ── Value noise (fast, smooth) ───────────────────────────────────────────
+  float hash(vec3 p) {
+    p  = fract(p * vec3(443.897, 441.423, 437.195));
+    p += dot(p, p.yxz + 19.19);
+    return fract((p.x + p.y) * p.z);
+  }
+  float vnoise(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(mix(hash(i),            hash(i+vec3(1,0,0)), f.x),
+          mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)), f.x), f.y),
+      mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)), f.x),
+          mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)), f.x), f.y),
+      f.z);
+  }
+
+  // ── 6-octave fBm — creates cloud-like structure ──────────────────────────
+  float fbm(vec3 p) {
+    float v = 0.0;
+    float a = 0.5;
+    vec3  s = p;
+    for (int i = 0; i < 6; i++) {
+      v += a * vnoise(s);
+      s *= 2.02;
+      a *= 0.5;
     }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    return g;
-  }, []);
+    return v;
+  }
 
-  return (
-    <points geometry={geo}>
-      <pointsMaterial
-        color="#5c4499"
-        size={0.065}
-        sizeAttenuation
-        transparent
-        opacity={0.8}
-      />
-    </points>
-  );
-}
+  void main() {
+    vec2 uv = vUv;
 
-// ── 3. Floating crystal ───────────────────────────────────────────────────────
-// Positioned right-of-centre so it floats away from the left-aligned page text.
-// MeshPhongMaterial with flatShading makes each icosahedron face a distinct
-// reflective facet — works well with point lights alone (no envMap needed).
+    // ── Light source: top-right corner in aspect-corrected screen space ──
+    vec2 aUV    = vec2(uv.x * uAspect, uv.y);
+    vec2 aLight = vec2(0.87 * uAspect, 0.87);
+    float screenLightDist = length(aUV - aLight);
+    float screenFalloff   = exp(-screenLightDist * 1.6);
 
-function FloatingCrystal() {
-  const ref = useRef<THREE.Mesh>(null);
-  const elapsed = useRef(0);
+    // ── Ray setup from a virtual camera ─────────────────────────────────
+    vec3 ro = vec3(0.0, 0.0, 2.5);
+    vec2 ndc = (uv - 0.5) * vec2(uAspect, 1.0);
+    vec3 rd = normalize(vec3(ndc, -1.3));
 
-  useFrame((_, delta) => {
-    if (!ref.current) return;
-    elapsed.current += delta;
-    ref.current.rotation.y += delta * 0.12;
-    ref.current.rotation.x += delta * 0.04;
-    ref.current.position.y = -0.5 + Math.sin(elapsed.current * 0.35) * 0.22;
+    // World-space light direction matching the corner position
+    vec3 lightDir = normalize(vec3(0.6, 0.65, -0.45));
+
+    // ── Ray march through fog volume ─────────────────────────────────────
+    float fog          = 0.0;
+    float illumination = 0.0;
+    float stepSize     = 0.30;
+
+    for (int i = 0; i < 56; i++) {
+      float t = float(i) * stepSize;
+      vec3  p = ro + rd * t;
+
+      // Animated noise — drift the fog slowly on all axes
+      vec3 sp = p * 0.38
+              + vec3( uTime * 0.028,
+                     -uTime * 0.012,
+                      uTime * 0.018);
+      float density = fbm(sp);
+      density = max(0.0, density - 0.30);   // carve out clear regions
+
+      if (density > 0.001) {
+        // Mie-like forward scattering — bright where you look toward the light
+        float scatter = pow(max(0.0, dot(-rd, lightDir)), 6.0) * 0.45;
+        // Screen-space falloff from the corner light (simple, effective)
+        float atten = screenFalloff * 0.80 + scatter;
+
+        float transmit  = 1.0 - fog;
+        fog          += density * 0.052 * transmit;
+        illumination += density * atten  * 0.16 * transmit;
+      }
+
+      // Early exit once fully opaque
+      if (fog > 0.98) break;
+    }
+
+    // ── Colour palette — matches the site's void/indigo theme ───────────
+    // Background: --void #050508
+    vec3 bgColor    = vec3(0.020, 0.020, 0.031);
+    // Fog body: dark indigo, visible but not distracting
+    vec3 fogColor   = vec3(0.060, 0.042, 0.155);
+    // Light: indigo-tinted white, bright near the source
+    vec3 lightColor = vec3(0.70,  0.75,  1.00);
+
+    vec3 col = mix(bgColor, fogColor, clamp(fog, 0.0, 1.0));
+    col += lightColor * clamp(illumination, 0.0, 2.0);
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Full-screen fog plane
+// renderOrder -1 → renders first; depthTest/Write false → never occludes
+// the torus that renders on top with normal depth testing.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function VolumetricFog() {
+  const { size } = useThree();
+
+  // Uniform object is stable across renders; values mutated in useFrame
+  const uniforms = useRef<Record<string, THREE.IUniform>>({
+    uTime:   { value: 0 },
+    uAspect: { value: size.width / size.height },
+  });
+
+  useFrame((state, delta) => {
+    uniforms.current.uTime.value  += delta;
+    // Keep aspect ratio correct on resize
+    uniforms.current.uAspect.value =
+      state.size.width / state.size.height;
   });
 
   return (
-    // x=2.5 pushes the crystal into the right half of the viewport,
-    // z=–5 gives comfortable depth (~11 units from camera → ~70px apparent size)
-    <mesh ref={ref} position={[2.5, -0.5, -5]}>
-      <icosahedronGeometry args={[0.65, 1]} />
-      {/*
-       * flatShading=true gives each of the 80 faces its own surface normal,
-       * making the facets clearly distinct under the point lights above.
-       */}
-      <meshPhongMaterial
-        color="#818cf8"
-        specular="#ffffff"
-        shininess={120}
-        emissive="#312e81"
-        emissiveIntensity={0.55}
-        flatShading
+    <mesh renderOrder={-1}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        vertexShader={fogVert}
+        fragmentShader={fogFrag}
+        uniforms={uniforms.current}
+        depthTest={false}
+        depthWrite={false}
       />
     </mesh>
   );
 }
 
-// ── 4. Sun mesh ───────────────────────────────────────────────────────────────
-// Fully opaque + fog=false → maximum luminance for the GodRays luminance pass.
-// radius 0.15 at distance ~25 ≈ a 12px dot — clearly a light source, not a sphere.
+// ─────────────────────────────────────────────────────────────────────────────
+// Rotating torus
+//
+// Dark, polished chrome ring that sits in the bright fog area (right-of-centre).
+// The high-shininess Phong specular creates the narrow bright rim highlight
+// seen in the reference — this works without an envMap because the point light
+// above-right mimics the same illumination as the fog shader's light.
+// ─────────────────────────────────────────────────────────────────────────────
 
-interface SunMeshProps {
-  onMount: (mesh: THREE.Mesh) => void;
-}
+function FloatingTorus() {
+  const ref  = useRef<THREE.Mesh>(null);
+  const time = useRef(0);
 
-function SunMesh({ onMount }: SunMeshProps) {
+  useFrame((_, delta) => {
+    if (!ref.current) return;
+    time.current += delta;
+    // Very slow primary roll around Z
+    ref.current.rotation.z += delta * 0.045;
+    // Subtle breathing sway on Y
+    ref.current.rotation.y = Math.sin(time.current * 0.18) * 0.06;
+  });
+
   return (
-    <mesh ref={(m) => { if (m) onMount(m); }} position={[13, 9.5, -15]}>
-      <sphereGeometry args={[0.15, 8, 8]} />
-      <meshBasicMaterial color="#ffffff" fog={false} />
+    // Initial tilt: pitched forward on X, slight lean on Z — matching reference
+    <mesh ref={ref} position={[1.5, 0.3, -3]} rotation={[-0.55, 0, 0.25]}>
+      {/* radius=1.5, tube=0.22 — large enough to read at scene depth */}
+      <torusGeometry args={[1.5, 0.22, 128, 256]} />
+      <meshPhongMaterial
+        color="#06060f"
+        specular="#a5b4fc"
+        shininess={340}
+        emissive="#060614"
+        emissiveIntensity={0.25}
+      />
     </mesh>
   );
 }
 
-// ── 5. Scene composition ──────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Scene
+// ─────────────────────────────────────────────────────────────────────────────
 
 function Scene() {
-  const [sun, setSun] = useState<THREE.Mesh | null>(null);
+  const { scene } = useThree();
+  useMemo(() => {
+    scene.background = new THREE.Color(0x050508);
+    scene.fog = null; // fog handled by shader, not Three.js
+  }, [scene]);
 
   return (
     <>
-      <SceneSetup />
+      {/* Faint ambient so the torus shadow-side isn't absolute black */}
+      <ambientLight intensity={0.06} color="#0a0820" />
 
-      <ambientLight intensity={0.04} color="#0d0a20" />
+      {/*
+       * Bright key light: position mirrors the fog shader's light direction
+       * so the torus rim catches the same "sun" that illuminates the fog.
+       */}
+      <pointLight
+        position={[10, 9, -4]}
+        intensity={8}
+        color="#b4b8ff"
+        distance={50}
+        decay={1.5}
+      />
 
-      {/* Key light from top-right — creates the specular highlights on crystal faces */}
-      <pointLight position={[8, 6, -5]} intensity={4} color="#7c6fff" distance={30} decay={2} />
+      {/* Cool cyan fill from bottom-left — separates the torus from darkness */}
+      <pointLight
+        position={[-6, -4, 2]}
+        intensity={0.5}
+        color="#06b6d4"
+        distance={20}
+        decay={2}
+      />
 
-      {/* Cool cyan rim from bottom-left for silhouette separation */}
-      <pointLight position={[-5, -3, 3]} intensity={0.6} color="#06b6d4" distance={15} decay={2} />
-
-      <FogVolume />
-      <SunMesh onMount={setSun} />
-      <FloatingCrystal />
-
-      {sun && (
-        <EffectComposer>
-          <GodRays
-            sun={sun}
-            blendFunction={BlendFunction.SCREEN}
-            // 80 samples gives smooth shafts without banding
-            samples={80}
-            // density controls the step size per sample radially from the sun
-            density={0.97}
-            // decay 0.97 (was 0.93) — rays stay bright much further from source
-            decay={0.97}
-            // weight 0.7 (was 0.38) — primary driver of ray visibility
-            weight={0.7}
-            exposure={0.7}
-            clampMax={1}
-            // LARGE kernel = wider blur per sample = rays physically extend
-            // across a much larger portion of the screen
-            kernelSize={KernelSize.LARGE}
-            blur
-          />
-        </EffectComposer>
-      )}
+      <VolumetricFog />
+      <FloatingTorus />
     </>
   );
 }
 
-// ── 6. Canvas ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Canvas
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function ThreeScene() {
   return (

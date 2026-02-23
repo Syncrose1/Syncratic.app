@@ -194,11 +194,11 @@ export const researchItems: ResearchItem[] = [
   {
     id: "drug-repurposing",
     title: "Structure-based Drug Repurposing",
-    description: "Computational screening of existing drug compounds against novel protein targets using molecular docking and AI/ML approaches to identify potential therapeutic candidates.",
+    description: "Undergraduate dissertation literature review exploring computational screening of existing drug compounds against novel protein targets using molecular docking and AI/ML approaches. Completed as part of BSc Pharmaceutical Chemistry at Queen Mary University of London.",
     category: "Computational Biology",
-    year: "2025",
-    status: "ongoing",
-    tags: ["AI/ML", "Molecular Docking", "Drug Discovery", "Computational Chemistry", "Bioinformatics"],
+    year: "2023",
+    status: "completed",
+    tags: ["AI/ML", "Molecular Docking", "Drug Discovery", "Computational Chemistry", "Bioinformatics", "Literature Review"],
   },
 ];
 

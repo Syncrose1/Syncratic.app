@@ -37,7 +37,10 @@ export function PageContainer({
       {/* Main Content */}
       <motion.main
         className={cn(
-          "min-h-screen px-8 pb-8 pt-24",
+          // relative + z-10 creates a stacking context that sits above the
+          // fixed Three.js canvas background, preventing the dynamically-loaded
+          // WebGL layer from ever painting over the page text.
+          "relative z-10 min-h-screen px-8 pb-8 pt-24",
           fullWidth && "px-8",
           className
         )}

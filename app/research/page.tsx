@@ -168,7 +168,93 @@ export default function ResearchPage() {
         </motion.div>
 
         <div className="space-y-6">
-          {researchItems.map((item, index) => (
+          {researchItems.filter(item => item.status === "ongoing").length === 0 ? (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-[var(--text-muted)] italic"
+            >
+              No active research projects at the moment.
+            </motion.p>
+          ) : (
+            researchItems.filter(item => item.status === "ongoing").map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <GlassCard className="p-8" hover>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex-1">
+                      <div className="mb-3 flex flex-wrap items-center gap-3">
+                        <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-[var(--text-muted)]">
+                          {item.category}
+                        </span>
+                        <span className="text-sm text-[var(--text-muted)]">
+                          {item.year}
+                        </span>
+                        <div className="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1">
+                          {getStatusIcon(item.status)}
+                          <span className="text-xs text-[var(--text-secondary)]">
+                            {getStatusText(item.status)}
+                          </span>
+                        </div>
+                      </div>
+                      <h3 className="mb-2 text-xl font-medium text-white">
+                        {item.title}
+                      </h3>
+                      <p className="mb-4 text-[var(--text-secondary)]">{item.description}</p>
+                      {item.tags && item.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {item.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full bg-white/5 px-3 py-1 text-xs text-[var(--text-muted)]"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {item.link && (
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border border-[var(--glass-border)] px-4 py-2 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--glass-border-hover)] hover:text-white"
+                      >
+                        View Paper
+                      </a>
+                    )}
+                  </div>
+                </GlassCard>
+              </motion.div>
+            ))
+          )}
+        </div>
+      </section>
+
+      {/* Completed Research */}
+      <section className="py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
+        >
+          <h2 className="mb-4 text-3xl font-light text-white">Completed Research</h2>
+          <div
+            className="h-1 w-20 rounded-full"
+            style={{ backgroundColor: "var(--accent-discovery)" }}
+          />
+        </motion.div>
+
+        <div className="space-y-6">
+          {researchItems.filter(item => item.status === "completed" || item.status === "published").map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, x: -20 }}
@@ -177,39 +263,26 @@ export default function ResearchPage() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <GlassCard className="p-8" hover>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
-                >
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1">
-                    <div className="mb-3 flex flex-wrap items-center gap-3"
-                    >
-                      <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-[var(--text-muted)]"
-                      >
+                    <div className="mb-3 flex flex-wrap items-center gap-3">
+                      <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-[var(--text-muted)]">
                         {item.category}
                       </span>
-                      
-                      <span className="text-sm text-[var(--text-muted)]"
-                      >
+                      <span className="text-sm text-[var(--text-muted)]">
                         {item.year}
                       </span>
-                      
-                      
-                      <div className="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1"
-                      >
+                      <div className="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1">
                         {getStatusIcon(item.status)}
-                        <span className="text-xs text-[var(--text-secondary)]"
-                        >
+                        <span className="text-xs text-[var(--text-secondary)]">
                           {getStatusText(item.status)}
                         </span>
                       </div>
                     </div>
-                    
-                    <h3 className="mb-2 text-xl font-medium text-white"
-                    >
+                    <h3 className="mb-2 text-xl font-medium text-white">
                       {item.title}
                     </h3>
-                    
-                     <p className="mb-4 text-[var(--text-secondary)]">{item.description}</p>
-                    
+                    <p className="mb-4 text-[var(--text-secondary)]">{item.description}</p>
                     {item.tags && item.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {item.tags.map((tag) => (
@@ -223,7 +296,6 @@ export default function ResearchPage() {
                       </div>
                     )}
                   </div>
-
                   {item.link && (
                     <a
                       href={item.link}

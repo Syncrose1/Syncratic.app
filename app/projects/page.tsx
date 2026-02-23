@@ -197,23 +197,41 @@ export default function ProjectsPage() {
                     {/* Visual Side */}
                     <div className="relative min-h-[180px] sm:min-h-[240px] lg:min-h-0 bg-gradient-to-br from-white/5 to-transparent p-5 sm:p-6 lg:p-8"
                     >
-                      {/* Placeholder for project screenshot */}
-                      <div
-                        className="absolute inset-4 rounded-xl border border-dashed border-[var(--glass-border)] flex items-center justify-center"
-                        style={{
-                          background: `linear-gradient(135deg, ${project.accentColor}10 0%, transparent 50%)`,
-                        }}
-                      >
-                        <div className="text-center">
-                          <Icon
-                            className="mx-auto mb-2 sm:mb-4 h-10 w-10 sm:h-16 sm:w-16 opacity-30"
-                            style={{ color: project.accentColor }}
+                      {/* Project screenshot or placeholder */}
+                      {project.id === "medtracker" ? (
+                        <div className="absolute inset-4 rounded-xl overflow-hidden">
+                          <img
+                            src="/MedTracker_screenshot.png"
+                            alt="MedTracker Screenshot"
+                            className="w-full h-full object-cover"
                           />
-                          <p className="text-xs sm:text-sm text-[var(--text-muted)]">
-                            {project.shortName} Preview
-                          </p>
                         </div>
-                      </div>
+                      ) : project.id === "blockout" ? (
+                        <div className="absolute inset-4 rounded-xl overflow-hidden">
+                          <img
+                            src="/BlockOut_screenshot.png"
+                            alt="BlockOut Screenshot"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className="absolute inset-4 rounded-xl border border-dashed border-[var(--glass-border)] flex items-center justify-center"
+                          style={{
+                            background: `linear-gradient(135deg, ${project.accentColor}10 0%, transparent 50%)`,
+                          }}
+                        >
+                          <div className="text-center">
+                            <Icon
+                              className="mx-auto mb-2 sm:mb-4 h-10 w-10 sm:h-16 sm:w-16 opacity-30"
+                              style={{ color: project.accentColor }}
+                            />
+                            <p className="text-xs sm:text-sm text-[var(--text-muted)]">
+                              {project.shortName} Preview
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Decorative Elements */}
                       <motion.div

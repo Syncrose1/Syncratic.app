@@ -1,23 +1,28 @@
 "use client";
 
+import { SplineBackground } from "../three/SplineBackground";
 import { FogRaysBackground } from "../three/FogRaysBackground";
 import { MouseEffects } from "./MouseEffects";
 
 /**
  * AmbientBackground Component
  *
- * Full-screen fixed background layer.
- * Renders the Three.js fog + god-rays + floating crystal scene,
- * with the mouse-reactive 2D particle layer on top.
+ * Full-screen fixed background layer, three stacked sublayers:
+ *   1. SplineBackground  — Spline iframe: god rays, fog, primary arc
+ *   2. FogRaysBackground — Transparent R3F canvas: our closer 3D ring
+ *   3. MouseEffects      — 2D mouse-reactive particles
  */
 
 export function AmbientBackground() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Three.js atmospheric scene: fog, god rays, rotating crystal */}
+      {/* Layer 1: Spline atmospheric scene (god rays + arc) */}
+      <SplineBackground />
+
+      {/* Layer 2: Our R3F ring — transparent canvas sits above Spline */}
       <FogRaysBackground />
 
-      {/* 2D mouse-reactive particles sit above the 3D background */}
+      {/* Layer 3: 2D mouse-reactive particles */}
       <MouseEffects />
     </div>
   );

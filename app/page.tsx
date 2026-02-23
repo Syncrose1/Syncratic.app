@@ -29,7 +29,7 @@ export default function HomePage() {
           <Sparkles className="h-4 w-4 text-[var(--accent-primary)]" />
           <span className="text-sm font-medium tracking-widest text-[var(--accent-primary)] uppercase"
           >
-            Welcome to my portfolio
+            Welcome to the portfolio of...
           </span>
         </motion.div>
 
@@ -49,34 +49,26 @@ export default function HomePage() {
 
         {/* Main Title */}
         <div className="mb-8">
-          {/* Mobile: Two lines with break */}
+          {/* Mobile */}
           <div className="sm:hidden">
-            <AnimatedText
-              text="My name is"
-              type="chars"
-              animation="fadeUp"
-              delay={0.3}
-              staggerDelay={0.05}
-              className="text-4xl font-light tracking-tight text-white"
-            />
             <AnimatedText
               text="Raahat Shah"
               type="chars"
               animation="fadeUp"
-              delay={0.5}
+              delay={0.3}
               staggerDelay={0.05}
               className="text-4xl font-light tracking-tight text-white"
             />
           </div>
-          {/* Desktop: Single line */}
+          {/* Desktop */}
           <div className="hidden sm:block">
             <AnimatedText
-              text="My name is Raahat Shah"
+              text="Raahat Shah"
               type="chars"
               animation="fadeUp"
               delay={0.3}
               staggerDelay={0.05}
-              className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light tracking-tight text-white"
+              className="text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight text-white"
             />
           </div>
         </div>

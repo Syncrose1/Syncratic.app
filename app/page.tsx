@@ -83,12 +83,12 @@ function FloatingLogo({ containerRef }: { containerRef: React.RefObject<HTMLDivE
   return (
     <motion.div
       ref={logoRef}
-      className="absolute right-8 xl:right-16 top-32 xl:top-28 w-40 h-40 xl:w-48 xl:h-48 cursor-pointer hidden lg:block"
+      className="absolute right-4 xl:right-8 top-64 xl:top-60 w-64 h-64 xl:w-80 xl:h-80 cursor-pointer hidden lg:block"
       style={{ x: springX, y: springY }}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay: 0.25 }}
-      whileHover={{ scale: 1.1 }}
+      whileHover={{ scale: 1.05 }}
     >
       <img 
         src="/Syncratic-Logo.svg" 

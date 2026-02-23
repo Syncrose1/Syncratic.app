@@ -69,7 +69,8 @@ const fogFrag = /* glsl */ `
     vec2 aUV    = vec2(uv.x * uAspect, uv.y);
     vec2 aLight = vec2(0.87 * uAspect, 0.87);
     float screenLightDist = length(aUV - aLight);
-    float screenFalloff   = exp(-screenLightDist * 1.6);
+    // Reduced multiplier (1.6→1.0) widens the glow into a softer bloom
+    float screenFalloff   = exp(-screenLightDist * 1.0);
 
     // ── Ray setup from a virtual camera ─────────────────────────────────
     vec3 ro = vec3(0.0, 0.0, 2.5);
@@ -184,11 +185,11 @@ function FloatingTorus() {
     ref.current.rotation.y = Math.sin(time.current * 0.18) * 0.06;
   });
 
+  // Pushed right (x=4.5) and deep (z=-7): right third of screen, clear of text.
+  // At distance ~13 units, radius=1.0 ≈ 110px apparent size.
   return (
-    // Initial tilt: pitched forward on X, slight lean on Z — matching reference
-    <mesh ref={ref} position={[1.5, 0.3, -3]} rotation={[-0.55, 0, 0.25]}>
-      {/* radius=1.5, tube=0.22 — large enough to read at scene depth */}
-      <torusGeometry args={[1.5, 0.22, 128, 256]} />
+    <mesh ref={ref} position={[4.5, 0.5, -7]} rotation={[-0.55, 0, 0.22]}>
+      <torusGeometry args={[1.0, 0.14, 128, 256]} />
       <meshPhongMaterial
         color="#06060f"
         specular="#a5b4fc"
@@ -221,10 +222,10 @@ function Scene() {
        * so the torus rim catches the same "sun" that illuminates the fog.
        */}
       <pointLight
-        position={[10, 9, -4]}
-        intensity={8}
+        position={[12, 9, -5]}
+        intensity={10}
         color="#b4b8ff"
-        distance={50}
+        distance={60}
         decay={1.5}
       />
 

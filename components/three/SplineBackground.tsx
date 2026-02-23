@@ -11,7 +11,7 @@
 export function SplineBackground() {
   return (
     <iframe
-      src="https://my.spline.design/theeternalarc-lpqtqpy3zvcgE1sODuEYMX5J-Vrs/embed"
+      src="https://my.spline.design/theeternalarc-lpqtqpy3zvcgE1sODuEYMX5J-Vrs/"
       frameBorder={0}
       style={{
         position: "absolute",

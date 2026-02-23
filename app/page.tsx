@@ -83,7 +83,7 @@ function FloatingLogo({ containerRef }: { containerRef: React.RefObject<HTMLDivE
   return (
     <motion.div
       ref={logoRef}
-      className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-32 cursor-pointer hidden lg:block"
+      className="absolute right-8 xl:right-16 top-32 xl:top-28 w-40 h-40 xl:w-48 xl:h-48 cursor-pointer hidden lg:block"
       style={{ x: springX, y: springY }}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}

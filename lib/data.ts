@@ -69,7 +69,7 @@ export const mainNavigation: NavItem[] = [
     icon: FlaskConical,
     theme: "research",
     description: "What I explore",
-    hidden: true, // Hidden until real research content is available
+    hidden: false,
   },
   {
     id: "contact",
@@ -180,6 +180,7 @@ export interface ResearchItem {
   year: string;
   link?: string;
   status: "ongoing" | "completed" | "published";
+  tags?: string[];
 }
 
 /**
@@ -190,15 +191,15 @@ export interface ResearchItem {
  * To show research: 1) Add items here, 2) Set hidden: false in mainNavigation
  */
 export const researchItems: ResearchItem[] = [
-  // Add real research items here when available
-  // {
-  //   id: "research-1",
-  //   title: "Your Real Research Title",
-  //   description: "Description of your actual research project",
-  //   category: "Category",
-  //   year: "2024",
-  //   status: "ongoing",
-  // },
+  {
+    id: "drug-repurposing",
+    title: "Structure-based Drug Repurposing",
+    description: "Computational screening of existing drug compounds against novel protein targets using molecular docking and AI/ML approaches to identify potential therapeutic candidates.",
+    category: "Computational Biology",
+    year: "2025",
+    status: "ongoing",
+    tags: ["AI/ML", "Molecular Docking", "Drug Discovery", "Computational Chemistry", "Bioinformatics"],
+  },
 ];
 
 /**

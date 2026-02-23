@@ -105,26 +105,12 @@ export default function BlockOutPage() {
             glow="subtle"
             border
           >
-            <div
-              className="flex h-full w-full items-center justify-center"
-              style={{
-                background: `linear-gradient(135deg, ${accentColor}15 0%, transparent 50%, ${accentColor}05 100%)`,
-              }}
-            >
-              <div className="text-center">
-                <Icon
-                  className="mx-auto mb-6 h-24 w-24 opacity-20"
-                  style={{ color: accentColor }}
-                />
-                <p className="text-lg text-[var(--text-muted)]">
-                  {project.shortName} Interface Preview
-                </p>
-                <p className="mt-2 text-sm text-[var(--text-muted)] opacity-60">
-                  Screenshot coming soon
-                </p>
-              </div>
-            </div>
-
+            <img
+              src="/BlockOut_screenshot.png"
+              alt="BlockOut Interface Screenshot"
+              className="h-full w-full object-cover"
+            />
+            
             <motion.div
               className="absolute right-1/4 top-1/4 h-64 w-64 rounded-full opacity-30"
               style={{

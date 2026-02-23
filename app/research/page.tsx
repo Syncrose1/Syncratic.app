@@ -208,7 +208,20 @@ export default function ResearchPage() {
                       {item.title}
                     </h3>
                     
-                    <p className="text-[var(--text-secondary)]">{item.description}</p>
+                     <p className="mb-4 text-[var(--text-secondary)]">{item.description}</p>
+                    
+                    {item.tags && item.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {item.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-white/5 px-3 py-1 text-xs text-[var(--text-muted)]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {item.link && (

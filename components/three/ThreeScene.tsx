@@ -7,169 +7,159 @@ import { useRef, useMemo } from "react";
 import * as THREE from "three";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Volumetric fog shaders
-//
-// The vertex shader bypasses the camera/projection matrices so the plane
-// always covers exactly the full screen regardless of camera position.
-// The fragment shader ray-marches through 6-octave fractal Brownian motion
-// noise, accumulating fog density and Mie-scattered light from the top-right
-// "sun".  This produces the soft, organic, cloud-like fog from the reference.
+// Shared vertex shader — standard UV pass-through, uses camera matrices so
+// each mesh sits correctly in 3-D space (unlike the old full-screen plane).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const fogVert = /* glsl */ `
+const basicVert = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
-    // Position directly in NDC — bypasses all camera transforms.
-    // PlaneGeometry(2,2) has vertices at ±1, which map to screen corners.
-    gl_Position = vec4(position.xy, 1.0, 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 
-const fogFrag = /* glsl */ `
+// ─────────────────────────────────────────────────────────────────────────────
+// God-ray bar fragment shader
+// Each bar is a tall PlaneGeometry.  The shader fades horizontally from the
+// centre outward (soft gaussian edge) and fades at both tips so the bar
+// dissolves into the scene rather than ending sharply.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const rayFrag = /* glsl */ `
   varying vec2 vUv;
-  uniform float uTime;
-  uniform float uAspect;
-
-  // ── Value noise (fast, smooth) ───────────────────────────────────────────
-  float hash(vec3 p) {
-    p  = fract(p * vec3(443.897, 441.423, 437.195));
-    p += dot(p, p.yxz + 19.19);
-    return fract((p.x + p.y) * p.z);
-  }
-  float vnoise(vec3 p) {
-    vec3 i = floor(p);
-    vec3 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-    return mix(
-      mix(mix(hash(i),            hash(i+vec3(1,0,0)), f.x),
-          mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)), f.x), f.y),
-      mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)), f.x),
-          mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)), f.x), f.y),
-      f.z);
-  }
-
-  // ── 6-octave fBm — creates cloud-like structure ──────────────────────────
-  float fbm(vec3 p) {
-    float v = 0.0;
-    float a = 0.5;
-    vec3  s = p;
-    for (int i = 0; i < 6; i++) {
-      v += a * vnoise(s);
-      s *= 2.02;
-      a *= 0.5;
-    }
-    return v;
-  }
+  uniform float uOpacity;
+  uniform vec3  uColor;
 
   void main() {
-    vec2 uv = vUv;
+    // Horizontal: distance from centre line (vUv.x = 0 … 1, centre = 0.5)
+    float xDist = abs(vUv.x - 0.5) * 2.0;          // 0 at centre, 1 at edge
+    float xFade = pow(max(1.0 - xDist, 0.0), 1.8);  // soft gaussian profile
 
-    // ── Light source: top-right corner in aspect-corrected screen space ──
-    vec2 aUV    = vec2(uv.x * uAspect, uv.y);
-    vec2 aLight = vec2(0.87 * uAspect, 0.87);
-    float screenLightDist = length(aUV - aLight);
-    // Reduced multiplier (1.6→1.0) widens the glow into a softer bloom
-    float screenFalloff   = exp(-screenLightDist * 1.0);
+    // Vertical: fade in at base, fade out at tip
+    float yFade = smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.92, vUv.y);
 
-    // ── Ray setup from a virtual camera ─────────────────────────────────
-    vec3 ro = vec3(0.0, 0.0, 2.5);
-    vec2 ndc = (uv - 0.5) * vec2(uAspect, 1.0);
-    vec3 rd = normalize(vec3(ndc, -1.3));
-
-    // World-space light direction matching the corner position
-    vec3 lightDir = normalize(vec3(0.6, 0.65, -0.45));
-
-    // ── Ray march through fog volume ─────────────────────────────────────
-    float fog          = 0.0;
-    float illumination = 0.0;
-    float stepSize     = 0.30;
-
-    for (int i = 0; i < 56; i++) {
-      float t = float(i) * stepSize;
-      vec3  p = ro + rd * t;
-
-      // Animated noise — drift the fog slowly on all axes
-      vec3 sp = p * 0.38
-              + vec3( uTime * 0.028,
-                     -uTime * 0.012,
-                      uTime * 0.018);
-      float density = fbm(sp);
-      density = max(0.0, density - 0.30);   // carve out clear regions
-
-      if (density > 0.001) {
-        // Mie-like forward scattering — bright where you look toward the light
-        float scatter = pow(max(0.0, dot(-rd, lightDir)), 6.0) * 0.45;
-        // Screen-space falloff from the corner light (simple, effective)
-        float atten = screenFalloff * 0.80 + scatter;
-
-        float transmit  = 1.0 - fog;
-        fog          += density * 0.052 * transmit;
-        illumination += density * atten  * 0.16 * transmit;
-      }
-
-      // Early exit once fully opaque
-      if (fog > 0.98) break;
-    }
-
-    // ── Colour palette — matches the site's void/indigo theme ───────────
-    // Background: --void #050508
-    vec3 bgColor    = vec3(0.020, 0.020, 0.031);
-    // Fog body: dark indigo, visible but not distracting
-    vec3 fogColor   = vec3(0.060, 0.042, 0.155);
-    // Light: indigo-tinted white, bright near the source
-    vec3 lightColor = vec3(0.70,  0.75,  1.00);
-
-    vec3 col = mix(bgColor, fogColor, clamp(fog, 0.0, 1.0));
-    col += lightColor * clamp(illumination, 0.0, 2.0);
-
-    gl_FragColor = vec4(col, 1.0);
+    gl_FragColor = vec4(uColor, xFade * yFade * uOpacity);
   }
 `;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Full-screen fog plane
-// renderOrder -1 → renders first; depthTest/Write false → never occludes
-// the torus that renders on top with normal depth testing.
+// Ambient glow fragment shader
+// Covers a large plane centred on the top-right "sun".  Produces a soft
+// radial bloom that the individual ray bars emanate from.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function VolumetricFog() {
-  const { size } = useThree();
+const glowFrag = /* glsl */ `
+  varying vec2 vUv;
+  uniform float uOpacity;
 
-  // Uniform object is stable across renders; values mutated in useFrame
+  void main() {
+    float dist = length(vUv - vec2(0.5));
+    // Tighter falloff (3.2) keeps the glow concentrated; exp makes it smooth
+    float g = exp(-dist * 3.2) * uOpacity;
+    gl_FragColor = vec4(0.48, 0.52, 1.0, g);
+  }
+`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Ray configurations
+// [x, y, z,  rotZ_rad,  barWidth,  baseOpacity,  pulseSpeed,  pulsePhase]
+//
+// All rays originate near the top-right light source and angle downward-left,
+// spread across slightly different depths for parallax variety.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const RAYS = [
+  [  4.2,  3.8, -5.0, -0.75, 0.22, 0.22, 0.10, 0.0 ],
+  [  5.8,  5.2, -4.5, -0.72, 0.12, 0.18, 0.09, 1.3 ],
+  [  3.1,  5.8, -6.5, -0.79, 0.16, 0.13, 0.07, 2.7 ],
+  [  6.6,  4.2, -4.0, -0.73, 0.09, 0.16, 0.11, 0.8 ],
+  [  4.9,  6.8, -5.5, -0.77, 0.28, 0.09, 0.06, 2.2 ],
+  [  3.5,  4.2, -7.0, -0.70, 0.11, 0.14, 0.08, 3.6 ],
+  [  7.2,  5.8, -3.5, -0.74, 0.07, 0.17, 0.12, 1.7 ],
+] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Ambient glow — large soft bloom centred on the top-right light source
+// ─────────────────────────────────────────────────────────────────────────────
+
+function AmbientGlow() {
   const uniforms = useRef<Record<string, THREE.IUniform>>({
-    uTime:   { value: 0 },
-    uAspect: { value: size.width / size.height },
-  });
-
-  useFrame((state, delta) => {
-    uniforms.current.uTime.value  += delta;
-    // Keep aspect ratio correct on resize
-    uniforms.current.uAspect.value =
-      state.size.width / state.size.height;
+    uOpacity: { value: 0.55 },
   });
 
   return (
-    <mesh renderOrder={-1}>
-      <planeGeometry args={[2, 2]} />
+    <mesh position={[5.5, 5.5, -8]} renderOrder={-2}>
+      <planeGeometry args={[14, 14]} />
       <shaderMaterial
-        vertexShader={fogVert}
-        fragmentShader={fogFrag}
+        vertexShader={basicVert}
+        fragmentShader={glowFrag}
         uniforms={uniforms.current}
-        depthTest={false}
+        transparent
         depthWrite={false}
+        blending={THREE.AdditiveBlending}
       />
     </mesh>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Rotating torus
-//
-// Dark, polished chrome ring that sits in the bright fog area (right-of-centre).
-// The high-shininess Phong specular creates the narrow bright rim highlight
-// seen in the reference — this works without an envMap because the point light
-// above-right mimics the same illumination as the fog shader's light.
+// God-ray bars — seven angled planes that pulse gently in opacity
+// ─────────────────────────────────────────────────────────────────────────────
+
+function GodRayBars() {
+  const time = useRef(0);
+
+  // One uniforms object per ray, created once and mutated in useFrame
+  const uniformsArray = useMemo(
+    () =>
+      RAYS.map(([, , , , , baseOpacity, ,]) => ({
+        uOpacity: { value: baseOpacity },
+        uColor:   { value: new THREE.Color(0.55, 0.60, 1.0) },
+      })),
+    []
+  );
+
+  const meshRefs = useRef<(THREE.Mesh | null)[]>([]);
+
+  useFrame((_, delta) => {
+    time.current += delta;
+    RAYS.forEach(([, , , , , baseOpacity, speed, phase], i) => {
+      // Gentle sinusoidal pulse: ±30 % of base opacity
+      const pulse = Math.sin(time.current * speed + phase) * 0.30 + 1.0;
+      uniformsArray[i].uOpacity.value = baseOpacity * pulse;
+    });
+  });
+
+  return (
+    <>
+      {RAYS.map(([x, y, z, rotZ, width], i) => (
+        <mesh
+          key={i}
+          ref={(el) => { meshRefs.current[i] = el; }}
+          position={[x, y, z]}
+          rotation={[0, 0, rotZ]}
+          renderOrder={-1}
+        >
+          {/* width × 34 units tall — long enough to reach off-screen */}
+          <planeGeometry args={[width, 34]} />
+          <shaderMaterial
+            vertexShader={basicVert}
+            fragmentShader={rayFrag}
+            uniforms={uniformsArray[i]}
+            transparent
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Floating torus — dark chrome ring that intercepts and deflects the rays
 // ─────────────────────────────────────────────────────────────────────────────
 
 function FloatingTorus() {
@@ -180,22 +170,21 @@ function FloatingTorus() {
     if (!ref.current) return;
     time.current += delta;
     // Very slow primary roll around Z
-    ref.current.rotation.z += delta * 0.045;
+    ref.current.rotation.z += delta * 0.04;
     // Subtle breathing sway on Y
-    ref.current.rotation.y = Math.sin(time.current * 0.18) * 0.06;
+    ref.current.rotation.y = Math.sin(time.current * 0.16) * 0.05;
   });
 
-  // Pushed right (x=4.5) and deep (z=-7): right third of screen, clear of text.
-  // At distance ~13 units, radius=1.0 ≈ 110px apparent size.
+  // Larger ring (radius 2.2), steeply tilted, right-of-centre and closer in
   return (
-    <mesh ref={ref} position={[4.5, 0.5, -7]} rotation={[-0.55, 0, 0.22]}>
-      <torusGeometry args={[1.0, 0.14, 128, 256]} />
+    <mesh ref={ref} position={[2.5, -0.5, -4]} rotation={[-1.05, 0.15, 0.28]}>
+      <torusGeometry args={[2.2, 0.18, 128, 256]} />
       <meshPhongMaterial
-        color="#06060f"
+        color="#060610"
         specular="#a5b4fc"
         shininess={340}
         emissive="#060614"
-        emissiveIntensity={0.25}
+        emissiveIntensity={0.2}
       />
     </mesh>
   );
@@ -209,36 +198,34 @@ function Scene() {
   const { scene } = useThree();
   useMemo(() => {
     scene.background = new THREE.Color(0x050508);
-    scene.fog = null; // fog handled by shader, not Three.js
+    scene.fog = null;
   }, [scene]);
 
   return (
     <>
       {/* Faint ambient so the torus shadow-side isn't absolute black */}
-      <ambientLight intensity={0.06} color="#0a0820" />
+      <ambientLight intensity={0.05} color="#080618" />
 
-      {/*
-       * Bright key light: position mirrors the fog shader's light direction
-       * so the torus rim catches the same "sun" that illuminates the fog.
-       */}
+      {/* Key light mirrors the god-ray source: top-right, indigo-white */}
       <pointLight
-        position={[12, 9, -5]}
-        intensity={10}
-        color="#b4b8ff"
-        distance={60}
+        position={[12, 10, -4]}
+        intensity={12}
+        color="#b0b6ff"
+        distance={70}
         decay={1.5}
       />
 
-      {/* Cool cyan fill from bottom-left — separates the torus from darkness */}
+      {/* Cool fill from bottom-left separates the torus from total darkness */}
       <pointLight
-        position={[-6, -4, 2]}
-        intensity={0.5}
+        position={[-5, -4, 2]}
+        intensity={0.4}
         color="#06b6d4"
         distance={20}
         decay={2}
       />
 
-      <VolumetricFog />
+      <AmbientGlow />
+      <GodRayBars />
       <FloatingTorus />
     </>
   );

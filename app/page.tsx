@@ -4,7 +4,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AnimatedText } from "@/components/ui/AnimatedText";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { ArrowDown, Sparkles } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
 /**
@@ -116,20 +116,6 @@ export default function HomePage() {
       <section ref={heroRef} className="relative flex min-h-[90vh] flex-col justify-center">
         {/* Floating Logo on Right */}
         <FloatingLogo containerRef={heroRef} />
-
-        {/* Eyebrow */}
-        <motion.div
-          className="mb-6 flex items-center gap-2"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <Sparkles className="h-4 w-4 text-[var(--accent-primary)]" />
-          <span className="text-sm font-medium tracking-widest text-[var(--accent-primary)] uppercase"
-          >
-            Welcome to the portfolio of...
-          </span>
-        </motion.div>
 
         {/* Main Title */}
         <div className="mb-8">

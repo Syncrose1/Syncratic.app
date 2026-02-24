@@ -143,7 +143,7 @@ export const projects: Project[] = [
       "Visual workload analysis",
       "Drag-and-drop interface",
     ],
-    techStack: ["React", "D3.js", "TypeScript", "Node.js", "Redis"],
+    techStack: ["React", "TypeScript", "D3.js"],
     status: "live",
   },
   {
@@ -164,7 +164,7 @@ export const projects: Project[] = [
       "Continuously expanding",
       "Free to use",
     ],
-    techStack: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+    techStack: ["Svelte", "TypeScript"],
     status: "live",
   },
 ];

@@ -5,16 +5,16 @@ import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { projects } from "@/lib/data";
-import { ArrowLeft, ExternalLink, CheckCircle, AlertCircle } from "lucide-react";
-import { ListTodo } from "lucide-react";
+import { ArrowLeft, ExternalLink, CheckCircle } from "lucide-react";
+import { FlaskConical } from "lucide-react";
 
 /**
- * Increment Project Detail Page
+ * Syncratic Labs Project Detail Page
  */
 
-export default function IncrementPage() {
-  const project = projects.find((p) => p.id === "increment")!;
-  const Icon = ListTodo;
+export default function LabsPage() {
+  const project = projects.find((p) => p.id === "labs")!;
+  const Icon = FlaskConical;
   const accentColor = "#8b5cf6";
 
   return (
@@ -68,11 +68,6 @@ export default function IncrementPage() {
             </div>          
           </div>
 
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-yellow-500/20 px-4 py-2 text-sm text-yellow-400">
-            <AlertCircle className="h-4 w-4" />
-            Currently in Development
-          </div>
-
           <p className="max-w-3xl text-lg leading-relaxed text-[var(--text-secondary)]">
             {project.longDescription}
           </p>
@@ -92,7 +87,7 @@ export default function IncrementPage() {
             className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-base font-medium text-white transition-all hover:opacity-90"
             style={{ backgroundColor: accentColor }}
           >
-            Learn More
+            Visit Labs
             <ExternalLink className="h-5 w-5" />
           </a>
         </motion.div>
@@ -110,25 +105,11 @@ export default function IncrementPage() {
             glow="subtle"
             border
           >
-            <div
-              className="flex h-full w-full items-center justify-center"
-              style={{
-                background: `linear-gradient(135deg, ${accentColor}15 0%, transparent 50%, ${accentColor}05 100%)`,
-              }}
-            >
-              <div className="text-center">
-                <Icon
-                  className="mx-auto mb-6 h-24 w-24 opacity-20"
-                  style={{ color: accentColor }}
-                />
-                <p className="text-lg text-[var(--text-muted)]">
-                  {project.shortName} Interface Preview
-                </p>
-                <p className="mt-2 text-sm text-[var(--text-muted)] opacity-60">
-                  Coming soon - Currently in development
-                </p>
-              </div>
-            </div>
+            <img
+              src="/Labs.png"
+              alt="Syncratic Labs Screenshot"
+              className="h-full w-full object-cover"
+            />
 
             <motion.div
               className="absolute right-1/4 top-1/4 h-64 w-64 rounded-full opacity-30"

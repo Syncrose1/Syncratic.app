@@ -403,8 +403,8 @@ export default function AboutPage() {
               },
               {
                 year: "2026",
-                title: "BlockOut & Increment",
-                description: "Launched BlockOut—a WinDirStat-inspired task visualiser. Increment is being rebuilt as a web-first application with AI-powered features.",
+                title: "BlockOut & Syncratic Labs",
+                description: "Launched BlockOut—a WinDirStat-inspired task visualiser. Also created Syncratic Labs, a collection of medical education tools including ANKI generators and ABG practice cases.",
               },
             ].map((milestone, index) => (
               <motion.div
@@ -463,8 +463,8 @@ export default function AboutPage() {
             },
             {
               year: "2026",
-              title: "BlockOut & Increment",
-              description: "Launched BlockOut in Q1 2026—a WinDirStat-inspired task visualiser. Increment is currently being rebuilt from the ground up as a web-first application with refined architecture and AI-powered features.",
+              title: "BlockOut & Syncratic Labs",
+              description: "Launched BlockOut in Q1 2026—a WinDirStat-inspired task visualiser. Also created Syncratic Labs, an extensible platform of medical education tools including ANKI generators and ABG practice cases.",
             },
           ].map((milestone, index) => (
             <motion.div

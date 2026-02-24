@@ -214,6 +214,14 @@ export default function ProjectsPage() {
                             className="w-full h-full object-cover"
                           />
                         </div>
+                      ) : project.id === "labs" ? (
+                        <div className="absolute inset-4 rounded-xl overflow-hidden">
+                          <img
+                            src="/Labs.png"
+                            alt="Syncratic Labs Screenshot"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                       ) : (
                         <div
                           className="absolute inset-4 rounded-xl border border-dashed border-[var(--glass-border)] flex items-center justify-center"

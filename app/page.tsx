@@ -261,10 +261,10 @@ export default function HomePage() {
               href: "/projects/blockout",
             },
             {
-              name: "Increment",
-              description: "List-based note taking tool with integrated AI-based task decomposition",
+              name: "Syncratic Labs",
+              description: "Collection of medical and productivity tools including ANKI generators and ABG practice cases",
               color: "var(--accent-discovery)",
-              href: "/projects/increment",
+              href: "/projects/labs",
             },
           ].map((project, index) => (
             <motion.a

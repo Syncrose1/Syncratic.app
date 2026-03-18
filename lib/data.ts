@@ -167,6 +167,27 @@ export const projects: Project[] = [
     techStack: ["Svelte", "TypeScript"],
     status: "live",
   },
+  {
+    id: "increment",
+    title: "Increment",
+    shortName: "Increment",
+    description: "An AI-powered personal notebook and wiki with fully integrated AI awareness and tooling.",
+    longDescription: "Increment is an AI-powered personal notebook and wiki that reimagines how you organize knowledge. Create wiki pages and nested subpages in a hierarchical structure. The persistent AI panel has full context awareness of your current page and can perform CRUD operations, access your files, and assist with content creation. Built on TipTap, it features a powerful WYSIWYG markdown editor with support for tables, rich text formatting, and collaborative AI assistance.",
+    url: "https://increment.syncratic.app",
+    tags: ["AI", "Notebook", "Wiki", "Knowledge Management", "Productivity"],
+    icon: ListTodo,
+    accentColor: "#ec4899",
+    features: [
+      "Hierarchical wiki pages and subpages",
+      "Persistent AI panel with full context awareness",
+      "AI-powered CRUD operations on pages",
+      "File access and management via AI",
+      "WYSIWYG markdown editor (TipTap)",
+      "Table and rich text formatting support",
+    ],
+    techStack: ["Next.js 15", "TailwindCSS", "TypeScript", "Supabase", "TipTap"],
+    status: "development",
+  },
 ];
 
 /**

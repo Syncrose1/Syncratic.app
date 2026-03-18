@@ -5,17 +5,17 @@ import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { projects } from "@/lib/data";
-import { ArrowLeft, ExternalLink, CheckCircle } from "lucide-react";
-import { FlaskConical } from "lucide-react";
+import { ArrowLeft, ExternalLink, CheckCircle, AlertCircle } from "lucide-react";
+import { ListTodo } from "lucide-react";
 
 /**
- * Syncratic Labs Project Detail Page
+ * Increment Project Detail Page
  */
 
-export default function LabsPage() {
-  const project = projects.find((p) => p.id === "labs")!;
-  const Icon = FlaskConical;
-  const accentColor = "#8b5cf6";
+export default function IncrementPage() {
+  const project = projects.find((p) => p.id === "increment")!;
+  const Icon = ListTodo;
+  const accentColor = "#ec4899";
 
   return (
     <PageContainer>
@@ -68,6 +68,11 @@ export default function LabsPage() {
             </div>          
           </div>
 
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-yellow-500/20 px-4 py-2 text-sm text-yellow-400">
+            <AlertCircle className="h-4 w-4" />
+            Currently in Development
+          </div>
+
           <p className="max-w-3xl text-lg leading-relaxed text-[var(--text-secondary)]">
             {project.longDescription}
           </p>
@@ -87,7 +92,7 @@ export default function LabsPage() {
             className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-base font-medium text-white transition-all hover:opacity-90"
             style={{ backgroundColor: accentColor }}
           >
-            Visit Labs
+            Learn More
             <ExternalLink className="h-5 w-5" />
           </a>
         </motion.div>
@@ -105,11 +110,25 @@ export default function LabsPage() {
             glow="subtle"
             border
           >
-            <img
-              src="/Labs.png"
-              alt="Syncratic Labs Screenshot"
-              className="h-full w-full object-cover"
-            />
+            <div
+              className="flex h-full w-full items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, ${accentColor}15 0%, transparent 50%, ${accentColor}05 100%)`,
+              }}
+            >
+              <div className="text-center">
+                <Icon
+                  className="mx-auto mb-6 h-24 w-24 opacity-20"
+                  style={{ color: accentColor }}
+                />
+                <p className="text-lg text-[var(--text-muted)]">
+                  {project.shortName} Interface Preview
+                </p>
+                <p className="mt-2 text-sm text-[var(--text-muted)] opacity-60">
+                  Coming soon - Currently in development
+                </p>
+              </div>
+            </div>
 
             <motion.div
               className="absolute right-1/4 top-1/4 h-64 w-64 rounded-full opacity-30"
@@ -209,54 +228,29 @@ export default function LabsPage() {
 
       {/* Navigation */}
       <section className="py-12">
-        <div className="flex justify-between">
+        <div className="flex justify-start">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
           >
             <Link
-              href="/projects/blockout"
+              href="/projects/labs"
               className="group flex items-center gap-4 rounded-xl border border-[var(--glass-border)] bg-white/5 p-4 transition-all hover:border-[var(--glass-border-hover)]"
             >
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-lg"
                 style={{
-                  backgroundColor: "rgba(249, 115, 22, 0.2)",
-                  color: "#f97316",
+                  backgroundColor: "rgba(139, 92, 246, 0.2)",
+                  color: "#8b5cf6",
                 }}
               >
-                <span className="text-lg">B</span>
+                <span className="text-lg">L</span>
               </div>
               
               <div>
                 <div className="text-xs text-[var(--text-muted)]">Previous</div>
-                <div className="font-medium text-white">BlockOut</div>
-              </div>
-            </Link>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-          >
-            <Link
-              href="/projects/increment"
-              className="group flex items-center gap-4 rounded-xl border border-[var(--glass-border)] bg-white/5 p-4 transition-all hover:border-[var(--glass-border-hover)]"
-            >
-              <div className="text-right">
-                <div className="text-xs text-[var(--text-muted)]">Next</div>
-                <div className="font-medium text-white">Increment</div>
-              </div>
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-lg"
-                style={{
-                  backgroundColor: "rgba(236, 72, 153, 0.2)",
-                  color: "#ec4899",
-                }}
-              >
-                <span className="text-lg">I</span>
+                <div className="font-medium text-white">Syncratic Labs</div>
               </div>
             </Link>
           </motion.div>

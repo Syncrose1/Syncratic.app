@@ -252,6 +252,12 @@ export default function HomePage() {
               color: "var(--accent-discovery)",
               href: "/projects/labs",
             },
+            {
+              name: "Increment",
+              description: "AI-powered personal notebook and wiki with fully integrated AI awareness and tooling",
+              color: "#ec4899",
+              href: "/projects/increment",
+            },
           ].map((project, index) => (
             <motion.a
               key={project.name}

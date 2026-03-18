@@ -242,21 +242,21 @@ export default function BlockOutPage() {
             transition={{ duration: 0.5, delay: 0.8 }}
           >
             <Link
-              href="/projects/labs"
+              href="/projects/increment"
               className="group flex items-center gap-4 rounded-xl border border-[var(--glass-border)] bg-white/5 p-4 transition-all hover:border-[var(--glass-border-hover)]"
             >
               <div className="text-right">
                 <div className="text-xs text-[var(--text-muted)]">Next</div>
-                <div className="font-medium text-white">Syncratic Labs</div>
+                <div className="font-medium text-white">Increment</div>
               </div>
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-lg"
                 style={{
-                  backgroundColor: "rgba(139, 92, 246, 0.2)",
-                  color: "#8b5cf6",
+                  backgroundColor: "rgba(236, 72, 153, 0.2)",
+                  color: "#ec4899",
                 }}
               >
-                <span className="text-lg">L</span>
+                <span className="text-lg">I</span>
               </div>
             </Link>
           </motion.div>

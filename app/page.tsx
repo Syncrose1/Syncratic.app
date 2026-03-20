@@ -161,7 +161,7 @@ export default function HomePage() {
           transition={{ duration: 0.6, delay: 1.2 }}
         >
           {[
-            { label: "Public Projects", value: "4", color: "var(--accent-tech)", offset: "ml-0" },
+            { label: "Public Projects", value: "5", color: "var(--accent-tech)", offset: "ml-0" },
             { label: "Years Coding", value: "8+", color: "var(--accent-human)", offset: "ml-8" },
             { label: "Driven by Curiosity", value: "∞", color: "var(--accent-discovery)", offset: "ml-16" },
           ].map((stat, index) => (

@@ -92,7 +92,7 @@ export default function IncrementPage() {
             className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-base font-medium text-white transition-all hover:opacity-90"
             style={{ backgroundColor: accentColor }}
           >
-            Learn More
+            Visit Live Site
             <ExternalLink className="h-5 w-5" />
           </a>
         </motion.div>

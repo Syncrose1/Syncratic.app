@@ -191,14 +191,14 @@ export const projects: Project[] = [
   },
   {
     id: "binder",
-    title: "Syncratic Binder",
+    title: "Binder",
     shortName: "Binder",
     description: "A ringbinder shell for all your self-contained HTML files. Store and serve HTML posters, timetables, infographics and interactive experiences.",
     longDescription: "A ringbinder shell for all the user's self-contained HTML files. These days LLM tooling is excellent and can generate beautiful HTML file posters, timetables, infographics and interactive experiences before you've completed your thoughts. This serves as a way to store and serve them. Users can upload these HTML files and allow them to be served Privately or Publically, for just yourself or for everyone to view.",
     url: "https://binder.syncratic.app",
     tags: ["HTML", "Storage", "Hosting", "LLM", "Productivity"],
     icon: BookOpen,
-    accentColor: "#f59e0b",
+    accentColor: "#06b6d4",
     features: [
       "Upload self-contained HTML files",
       "Organize files like a ring binder",

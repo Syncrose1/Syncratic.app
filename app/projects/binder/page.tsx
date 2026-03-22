@@ -15,7 +15,7 @@ import { BookOpen } from "lucide-react";
 export default function BinderPage() {
   const project = projects.find((p) => p.id === "binder")!;
   const Icon = BookOpen;
-  const accentColor = "#f59e0b";
+  const accentColor = "#06b6d4";
 
   return (
     <PageContainer>

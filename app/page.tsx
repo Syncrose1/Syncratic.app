@@ -261,7 +261,7 @@ export default function HomePage() {
             {
               name: "Binder",
               description: "A ringbinder shell for self-contained HTML files, posters, timetables and interactive experiences",
-              color: "#f59e0b",
+              color: "#06b6d4",
               href: "/projects/binder",
             },
           ].map((project, index) => (

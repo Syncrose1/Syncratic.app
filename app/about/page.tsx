@@ -401,10 +401,10 @@ export default function AboutPage() {
                 title: "MedTracker Launch",
                 description: "Released MedTracker—a UKMLA-based medical education tracker providing a ticklist version of the UKMLA content map.",
               },
-              {
+{
                 year: "2026",
-                title: "BlockOut & Syncratic Labs",
-                description: "Launched BlockOut—a WinDirStat-inspired task visualiser. Also created Syncratic Labs, a collection of medical education tools including ANKI generators and ABG practice cases.",
+                title: "BlockOut, Labs, Binder & Increment",
+                description: "Launched BlockOut and Syncratic Labs in early Q1 2026. Released Binder and Increment in Late Q1 2026—an AI-powered notebook and a ringbinder shell for HTML files respectively.",
               },
             ].map((milestone, index) => (
               <motion.div
@@ -463,8 +463,8 @@ export default function AboutPage() {
             },
             {
               year: "2026",
-              title: "BlockOut & Syncratic Labs",
-              description: "Launched BlockOut in Q1 2026—a WinDirStat-inspired task visualiser. Also created Syncratic Labs, an extensible platform of medical education tools including ANKI generators and ABG practice cases.",
+              title: "BlockOut, Labs, Binder & Increment",
+              description: "Launched BlockOut and Syncratic Labs in early Q1 2026. Released Binder and Increment in Late Q1 2026—an AI-powered notebook and a ringbinder shell for HTML files respectively.",
             },
           ].map((milestone, index) => (
             <motion.div

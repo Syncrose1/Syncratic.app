@@ -7,6 +7,7 @@ import {
   GraduationCap,
   Calendar,
   ListTodo,
+  BookOpen,
   type LucideIcon 
 } from "lucide-react";
 
@@ -186,7 +187,28 @@ export const projects: Project[] = [
       "Table and rich text formatting support",
     ],
     techStack: ["Next.js 15", "TailwindCSS", "TypeScript", "Supabase", "TipTap"],
-    status: "development",
+    status: "live",
+  },
+  {
+    id: "binder",
+    title: "Syncratic Binder",
+    shortName: "Binder",
+    description: "A ringbinder shell for all your self-contained HTML files. Store and serve HTML posters, timetables, infographics and interactive experiences.",
+    longDescription: "A ringbinder shell for all the user's self-contained HTML files. These days LLM tooling is excellent and can generate beautiful HTML file posters, timetables, infographics and interactive experiences before you've completed your thoughts. This serves as a way to store and serve them. Users can upload these HTML files and allow them to be served Privately or Publically, for just yourself or for everyone to view.",
+    url: "https://binder.syncratic.app",
+    tags: ["HTML", "Storage", "Hosting", "LLM", "Productivity"],
+    icon: BookOpen,
+    accentColor: "#f59e0b",
+    features: [
+      "Upload self-contained HTML files",
+      "Organize files like a ring binder",
+      "Private or public sharing options",
+      "Perfect for LLM-generated content",
+      "Support for posters, timetables, infographics",
+      "Interactive experiences hosting",
+    ],
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase"],
+    status: "live",
   },
 ];
 

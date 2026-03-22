@@ -237,7 +237,7 @@ export default function HomePage() {
             {
               name: "MedTracker",
               description: "UKMLA-based medical education tracker providing a ticklist version of the UKMLA content map",
-              color: "var(--accent-tech)",
+              color: "#10b981",
               href: "/projects/medtracker",
             },
             {

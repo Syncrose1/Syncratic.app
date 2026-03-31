@@ -216,22 +216,22 @@ export default function BinderPage() {
             transition={{ duration: 0.5, delay: 0.8 }}
           >
             <Link
-              href="/projects/increment"
+              href="/projects/labs"
               className="group flex items-center gap-4 rounded-xl border border-[var(--glass-border)] bg-white/5 p-4 transition-all hover:border-[var(--glass-border-hover)]"
             >
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-lg"
                 style={{
-                  backgroundColor: "rgba(236, 72, 153, 0.2)",
-                  color: "#ec4899",
+                  backgroundColor: "rgba(139, 92, 246, 0.2)",
+                  color: "#8b5cf6",
                 }}
               >
-                <span className="text-lg">I</span>
+                <span className="text-lg">L</span>
               </div>
               
               <div>
                 <div className="text-xs text-[var(--text-muted)]">Previous</div>
-                <div className="font-medium text-white">Increment</div>
+                <div className="font-medium text-white">Labs</div>
               </div>
             </Link>
           </motion.div>

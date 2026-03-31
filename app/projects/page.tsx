@@ -222,14 +222,6 @@ export default function ProjectsPage() {
                             className="w-full h-full object-cover"
                           />
                         </div>
-                      ) : project.id === "increment" ? (
-                        <div className="absolute inset-4 rounded-xl overflow-hidden">
-                          <img
-                            src="/Increment_Screenshot.png"
-                            alt="Increment Screenshot"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
                       ) : project.id === "binder" ? (
                         <div className="absolute inset-4 rounded-xl overflow-hidden">
                           <img

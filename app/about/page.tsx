@@ -403,8 +403,8 @@ export default function AboutPage() {
               },
 {
                 year: "2026",
-                title: "BlockOut, Labs, Binder & Increment",
-                description: "Launched BlockOut and Syncratic Labs in early Q1 2026. Released Binder and Increment in Late Q1 2026—an AI-powered notebook and a ringbinder shell for HTML files respectively.",
+                title: "BlockOut, Labs & Binder",
+                description: "Launched BlockOut and Syncratic Labs in early Q1 2026. Released Binder in Late Q1 2026—a unified note-taking and AI integrated HTML display suite combining personal notebooks, wikis, and ringbinder functionality for storing and serving HTML files.",
               },
             ].map((milestone, index) => (
               <motion.div
@@ -463,8 +463,8 @@ export default function AboutPage() {
             },
             {
               year: "2026",
-              title: "BlockOut, Labs, Binder & Increment",
-              description: "Launched BlockOut and Syncratic Labs in early Q1 2026. Released Binder and Increment in Late Q1 2026—an AI-powered notebook and a ringbinder shell for HTML files respectively.",
+              title: "BlockOut, Labs & Binder",
+              description: "Launched BlockOut and Syncratic Labs in early Q1 2026. Released Binder in Late Q1 2026—a unified note-taking and AI integrated HTML display suite combining personal notebooks, wikis, and ringbinder functionality for storing and serving HTML files.",
             },
           ].map((milestone, index) => (
             <motion.div
